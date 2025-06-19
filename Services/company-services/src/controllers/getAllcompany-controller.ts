@@ -1,8 +1,8 @@
-import { Request, Response } from "express";
+import { NextFunction, Request, Response } from "express";
 import { gettallcompany_service } from "../services/getAllcompany_service";
 import { Onecompany_service } from "../services/getOnecompany_service";
 
-export const getallcompany = async (req: Request, res: Response): Promise<void> => {
+export const getallcompany = async (req: Request, res: Response,next:NextFunction): Promise<void> => {
     try {
         const limit:number=Number(req.query.limit)||3
         const page:number=Number(req.query.page)||1
@@ -18,24 +18,27 @@ export const getallcompany = async (req: Request, res: Response): Promise<void> 
         res.status(200).json({ message: companydata })
     }
     catch (error) {
-        res.status(500).json({ error: error })
+         const err:any=new Error((error as Error).message)
+            err.code=500
+            next(err)
     }
 
 }
-export const get_Onecompany = async (req: Request, res: Response): Promise<void> => {
+export const get_Onecompany = async (req: Request, res: Response,next:NextFunction): Promise<void> => {
     try {
         const { id } = req.params
-        console.log(id);
         const data = await Onecompany_service(id)
         if (!data) {
-            res.status(404).json({ message: "data not found" })
+         const err:any=new Error("id not match with any comapny")
+            err.code=500
+            throw err
         }
         else {
             res.status(200).json({ messag: data })
         }
     }
     catch (error) {
-        res.status(500).json({ error: error })
+        next(error)
     }
 
 }

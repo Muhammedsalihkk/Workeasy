@@ -1,7 +1,7 @@
-import { Response ,Request } from "express";
+import { Response ,Request, NextFunction } from "express";
 import { delete_services, editcompany_services } from "../services/editcompany";
 
-export const editcompany=async(req:Request,res:Response):Promise<void>=>{
+export const editcompany=async(req:Request,res:Response,next:NextFunction):Promise<void>=>{
   try{
     const updateddata=req.body
     const {id}=req.params
@@ -11,23 +11,32 @@ export const editcompany=async(req:Request,res:Response):Promise<void>=>{
          res.status(200).json({message:result})
     }
     else{
-        res.status(404).json({error:"editing failed"})
+          const err:any=new Error("edit company not found")
+            err.code=404
+            throw err
     } 
   }
   catch(error)
   {
-    res.status(500).json({error:error})
+    next(error)
   }
 }
-export const deletcompany=async(req:Request,res:Response):Promise<void>=>{
+export const deletcompany=async(req:Request,res:Response,next:NextFunction):Promise<void>=>{
     const {id}=req.params
     try{
         const result=await delete_services(id)
+        if(!result)
+        { 
+            const err:any=new Error("company nort found")
+            err.code=404
+            throw err
+        }
         res.status(200).json({message:result})
+        
     }
     catch(error)
     {
-        res.status(500).json({error:error})
+       next(error)
         
     }
 

@@ -9,7 +9,7 @@ export const editcompany_services = async (id: string, updateddata: any): Promis
         return updated
     }
     catch (error) {
-        throw error
+        return null
     }
 
 }
@@ -19,6 +19,6 @@ export const delete_services = async (id: String): Promise<any> => {
         return !!data
     }
     catch(error){
-        throw error
+        return null
     }
 }
