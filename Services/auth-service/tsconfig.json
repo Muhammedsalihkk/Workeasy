@@ -112,5 +112,5 @@
     "rootDir": "src",
     "outDir": "dist",                              /* Skip type checking all .d.ts files. */
   },
-  "exclude": ["node_models","dist"]
+  "exclude": ["node_models","dist","tests"]
 }
