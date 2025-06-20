@@ -1,5 +1,5 @@
 import dotenv, { config } from 'dotenv'
 dotenv.config()
-export const configdata={
-    db_address:process.env.MONGO_DB
+export const configdata = {
+    db_address: process.env.MONGO_DB
 }

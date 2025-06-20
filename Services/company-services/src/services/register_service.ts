@@ -1,10 +1,10 @@
 import { address, company } from "../interface/company.interface"
 import { configdata } from "../config/env"
 import { company_model } from "../models/company_schema"
-export const register_service= async(companydata:company):Promise<string>=>{
+export const register_service= async(companydata:company):Promise<any>=>{
     try{
         const {address}=companydata
-        await company_model.create({
+        const result=await company_model.create({
             legalname:companydata.legalname,
             tradingname:companydata.tradingname,
             registration_number:companydata.registration_number,
@@ -22,7 +22,7 @@ export const register_service= async(companydata:company):Promise<string>=>{
             }
             
         })
-        return "success"
+        return result
     }
     catch(error:any)
     {

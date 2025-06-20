@@ -2,20 +2,34 @@ import { NextFunction, Request,Response } from "express"
 import { register_service } from "../services/register_service"
 import { company } from "../interface/company.interface"
 import { validation_company } from "../validators/company.validator"
+import { register_owner } from "../services/owner_register"
+import { delete_services } from "../services/editcompany"
 export const register_company=async(req:Request,res:Response,next:NextFunction):Promise<void>=>{
-
+  
       try{
-        const {error}=validation_company.validate(req.body)
+        const {error}=validation_company.validate(req.body.company)
+        
         if(error){
            const err:any=new Error(error.details[0].message)
            err.code=400
            throw err
         }
-        const companydata:company=req.body
-        const result:string= await register_service(companydata)
-        if(result=="success")
-        {
-            res.status(200).json({message:result})
+        const companydata:company=req.body.company
+        const result:any= await register_service(companydata)
+        if(typeof result=="object"&&result!=null)
+        {          
+            const data:any=await register_owner(result._id.toString(),req.body.admin)
+            if(typeof data=="object"&&data!=null)
+            {
+              res.status(200).json({message:{result,data}})
+            }
+            else{
+              await delete_services(result._id)
+               const err:any=new Error(data.error)
+              err.code=500
+              throw err
+            }
+            
         }
         else{
             const err:any=new Error(result)
