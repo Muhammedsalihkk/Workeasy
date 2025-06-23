@@ -15,6 +15,9 @@ services:
     container_name: authservice
     ports:
       - "3001:3001"
+    volumes:
+      - ./services/auth-service:/app
+    command: npx ts-node-dev --respawn --transpile-only src/app.ts
     env_file:
       - ./services/auth-service/.env
     depends_on:
@@ -26,6 +29,9 @@ services:
     container_name: company-service
     ports:
       - "3000:3000"
+    volumes:
+      - ./services/company-services:/app
+    command: npx ts-node-dev --respawn --transpile-only src/app.ts
     env_file:
       - ./services/company-services/.env
     depends_on:

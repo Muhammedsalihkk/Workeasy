@@ -14,18 +14,18 @@ export const register_company=async(req:Request,res:Response,next:NextFunction):
            err.code=400
            throw err
         }
-        const companydata:company=req.body.company
-        const result:any= await register_service(companydata)
+       const {company,admin,subscription}=req.body
+        const result:any= await register_service(company,admin,subscription)
         if(typeof result=="object"&&result!=null)
         {          
-            const data:any=await register_owner(result._id.toString(),req.body.admin)
+            const data:any=await register_owner(result._id.toString(),admin)
             if(typeof data=="object"&&data!=null)
             {
               res.status(200).json({message:{result,data}})
             }
             else{
               await delete_services(result._id)
-               const err:any=new Error(data.error)
+               const err:any=new Error(data)
               err.code=500
               throw err
             }

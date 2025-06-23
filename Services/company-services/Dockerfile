@@ -6,4 +6,4 @@ RUN npm install
 COPY . .
 ENV NODE_ENV=development
 EXPOSE 3000
-CMD ["npx","nodemon","src/app.ts"]
+CMD ["npx","nodemon","--watch","src","src/app.ts"]

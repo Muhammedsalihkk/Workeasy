@@ -13,8 +13,8 @@ export const employee_register = async (userdata: employee, company_id: string) 
             password: hashedpassword,
             email: userdata.email,
             number: userdata.number,
-            role: userdata.role
-        })
+            company_role: userdata.role
+        })  
         return result
     }
     catch (error: any) {

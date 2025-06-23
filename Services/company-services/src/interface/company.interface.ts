@@ -20,6 +20,9 @@ export interface company extends Document{
     logo?:string
     email:string
     status:string
+    admin_name:string,
+    plan_type:string,
+    plan_end:String
     address:address
 
 }

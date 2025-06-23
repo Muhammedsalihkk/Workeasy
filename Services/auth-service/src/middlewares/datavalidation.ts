@@ -1,6 +1,7 @@
-import Joi from "joi";
+import Joi, { string } from "joi";
 
 export const validation = Joi.object({
+    company_id:Joi.string().required(),
     name: Joi.string().required(),
     password: Joi.string().required(),
     number: Joi.string().pattern(/^[6-9]\d{9}$/).required(),
@@ -12,5 +13,10 @@ export const employee_validation = Joi.object({
     password: Joi.string().required(),
     number: Joi.string().pattern(/^[6-9]\d{9}$/).required(),
     email: Joi.string().email().required(),
-    role: Joi.string().required()
+    company_role: Joi.string().required()
 }).options({ convert: false })
+
+export const authData_validation=Joi.object({
+    email:Joi.string().required().email(),
+    password:Joi.string().required()
+}).options({convert:false})

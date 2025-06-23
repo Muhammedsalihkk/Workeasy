@@ -3,7 +3,9 @@ import { configdata } from "./config/congration"
 import authrouter from "./routers/authrouters"
 import { errorhadller } from "./middlewares/errormiddleware"
 import { db_connection } from "./config/db"
+import cookieParser from "cookie-parser"
 const app = express()
+app.use(cookieParser())
 app.use(express.json())
 
 db_connection()

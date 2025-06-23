@@ -14,3 +14,7 @@ export interface employee {
     role: string
     comapny_role: string
 }
+export interface authentication{
+    email:string,
+    password:string
+}

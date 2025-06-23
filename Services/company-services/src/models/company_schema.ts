@@ -1,5 +1,7 @@
 import {Schema,model} from "mongoose";
 import { company } from "../interface/company.interface";
+import { required } from "joi";
+
 
 function getdate():Date{
 
@@ -18,13 +20,16 @@ const companyschema=new Schema<company>({
     annual_revanue:{type:Number},
     phonenumber:{type:Number,required:true,unique:true},
     email:{type:String,required:true,unique:true},
+    admin_name:{type:String,required:true},
     logo:{type:String},
     status:{type:String,default:"active"},
+    plan_type:{type:String,required:true},
+    plan_end:{type:String,required:true},
     address:{
-        place:{type:String,require:true},
-        pin:{type:Number,require:true},
-        distict:{type:String,require:true},
-        state:{type:String,require:true},
+        place:{type:String,required:true},
+        pin:{type:Number,required:true},
+        distict:{type:String,required:true},
+        state:{type:String,required:true},
         
     }
 })
