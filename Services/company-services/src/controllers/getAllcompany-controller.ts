@@ -34,7 +34,7 @@ export const get_Onecompany = async (req: Request, res: Response,next:NextFuncti
             throw err
         }
         else {
-            res.status(200).json({ messag: data })
+            res.status(200).json({ message: data })
         }
     }
     catch (error) {

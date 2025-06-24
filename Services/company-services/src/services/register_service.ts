@@ -9,6 +9,7 @@ export const register_service= async(companydata:company,admin:any,subscription:
             date:companydata.date,  
             tradingname:companydata.tradingname,
             registration_number:companydata.registration_number,
+            GST_number:companydata.GST_number,
             company_type:companydata.company_type,
             primary_industry:companydata.primary_industry,
             annual_revanue:companydata.annual_revanue,

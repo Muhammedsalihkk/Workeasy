@@ -12,6 +12,7 @@ export const validation_company=Joi.object({
     email:Joi.string().required(),
     date:Joi.string().required(),
     logo:Joi.string(),
+    GST_number:Joi.string().required(),
     address:Joi.object({
         place:Joi.string().required(),
         pin:Joi.number().required(),

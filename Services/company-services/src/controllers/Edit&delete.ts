@@ -1,11 +1,13 @@
 import { Response ,Request, NextFunction } from "express";
 import { delete_services, editcompany_services } from "../services/editcompany";
 
+
 export const editcompany=async(req:Request,res:Response,next:NextFunction):Promise<void>=>{
   try{
     const updateddata=req.body
     const {id}=req.params
     const result:any=await editcompany_services(id,updateddata)
+  
     if(result)
     {
          res.status(200).json({message:result})

@@ -3,11 +3,12 @@ import companeyrouter from "./routers/company-router"
 import { configdata } from "./config/env";
 import { connectdb } from "./config/db";
 import { errorhandling } from "./middlewares/errorhadling";
+import cookieParser from "cookie-parser"
 
 const app=express()
 connectdb()
 app.use(express.json())
-
+app.use(cookieParser())
 app.use('/api',companeyrouter)
   app.listen(configdata.Port,()=>{
     console.log(`server is running on ${configdata.Port}`);

@@ -20,7 +20,16 @@ export const gettallcompany_service = async (skip: number, limit: number, search
             }
         }
 
-        const companies_data = await company_model.find(query, { legalname: 1,logo:1,admin_name:1,email:1,phonenumber:1,plan_type:1,plan_end:1, date: 1, status: 1 }).skip(skip).limit(limit)
+        const companies_data = await company_model.find(query, {legalname: 1,
+            logo:1,
+            admin_name:1,
+            email:1,
+            phonenumber:1,
+            plan_type:1,
+            plan_end:1,
+            date: 1,
+            status: 1
+         }).skip(skip).limit(limit)
         return companies_data
     }
     catch (error) {

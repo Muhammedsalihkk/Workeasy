@@ -15,6 +15,7 @@ const companyschema=new Schema<company>({
     date:{type:String,required:true},
     tradingname:{type:String,required:true},
     registration_number:{type:Number,required:true},
+    GST_number:{type:String,required:true},
     company_type:{type:String,required:true},
     primary_industry:{type:String,required:true},
     annual_revanue:{type:Number},
@@ -25,6 +26,7 @@ const companyschema=new Schema<company>({
     status:{type:String,default:"active"},
     plan_type:{type:String,required:true},
     plan_end:{type:String,required:true},
+    block:{type:Boolean,default:false},
     address:{
         place:{type:String,required:true},
         pin:{type:Number,required:true},

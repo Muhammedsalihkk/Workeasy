@@ -10,6 +10,7 @@ export const hasspassword=async(password:string):Promise<string>=>{
          throw err
       }
 }
+
 export const decode_password=async(newpassword:string,storedpassword:string):Promise<boolean>=>{
   try{
     const encoded:any=await bcrypt.compare(newpassword,storedpassword,)

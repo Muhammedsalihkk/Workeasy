@@ -1,0 +1,34 @@
+import { NextFunction, Request, Response } from "express";
+import { authData_validation } from "../../middlewares/datavalidation";
+import { employee_authentication_service } from "../../services/authentication";
+
+
+export const employee_authentication = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        const { error } = authData_validation.validate(req.body)
+
+        if (error) {
+            const err: any = new Error(error.details[0].message)
+            err.code = 404
+            throw err
+        }
+        else {
+            const response:any = await employee_authentication_service(req.body)
+            if (response.message) {
+                 throw response      
+            }
+            else {
+                res.cookie('token',response,{
+                    httpOnly:true,
+                    secure:false,
+                    maxAge:60*60*1000
+                })
+                res.status(200).json({message:"login success" })
+            }   
+        }
+    }
+    catch (error) {
+        next(error)
+    }
+
+}   
