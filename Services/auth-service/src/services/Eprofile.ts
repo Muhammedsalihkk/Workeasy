@@ -2,9 +2,7 @@ import { employeemodel } from "../models/employee_model";
 import { ownermodel } from "../models/owner_model";
 
 export const getemployee_profile_service=async(id:string)=>{
-  try{
-    console.log("id is",id);
-    
+  try{    
     const data=await employeemodel.findById(id)
     return data
   }

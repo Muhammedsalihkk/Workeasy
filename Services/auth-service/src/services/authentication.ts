@@ -49,7 +49,7 @@ export const owner_authentication_service=async(data:any):Promise<any>=>{
         err.code=404
         throw err
     }
-    console.log(owner);
+    
     
     if(owner[0].role=="companyadmin")
     {

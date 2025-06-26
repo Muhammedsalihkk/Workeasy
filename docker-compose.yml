@@ -9,10 +9,18 @@ services:
       - "27017:27017"
     volumes:
       - ./mongo-data:/data/db
+    networks:
+      - workeasy_default
 
   auth-service:
     build:
       context: ./services/auth-service
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.auth.rule=PathPrefix(`/auth`)"
+      - "traefik.http.services.auth.loadbalancer.server.port=3001"
+    networks:
+      - workeasy_default
     container_name: auth-service
     ports:
       - "3001:3001"
@@ -28,6 +36,13 @@ services:
     build:
       context: ./services/company-services
     container_name: company-service
+    labels:
+    - "traefik.enable=true"
+    - "traefik.http.routers.company.rule=PathPrefix(`/api/companies`)"
+    - "traefik.http.services.company.loadbalancer.server.port=3000"
+   
+    networks:
+      - workeasy_default
     ports:
       - "3000:3000"
     volumes:
@@ -37,6 +52,22 @@ services:
       - ./services/company-services/.env
     depends_on:
       - mongo
+  
+  traefik:
+    image: traefik:v3.0
+    command: 
+      -  --configFile=/etc/traefik/traefik.yml
+    ports:
+      - "80:80"
+    volumes:
+      - ./traefik/traefik.yml:/etc/traefik/traefik.yml
+      - /var/run/docker.sock:/var/run/docker.sock
+    networks:
+      - workeasy_default
+
 
 volumes:
   mongo-data:
+networks:
+    workeasy_default:
+
