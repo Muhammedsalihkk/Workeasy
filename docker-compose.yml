@@ -2,15 +2,17 @@ version: '3.8'
 
 services:
 
-  mongo:
-    image: mongo:6.0.13-jammy
-    container_name: mongo-db
-    ports:
-      - "27017:27017"
-    volumes:
-      - ./mongo-data:/data/db
-    networks:
-      - workeasy_default
+  rabbit-mq:
+      image: rabbitmq:3-management
+      container_name: rabbit-mq
+      ports:
+        - "5672:5672"
+        - "15672:15672"
+      environment:
+        RABBITMQ_DEFAULT_USER: workeasy
+        RABBITMQ_DEFAULT_PASS: workeasy123
+      networks:
+        - workeasy_default
 
   auth-service:
     build:
@@ -22,15 +24,12 @@ services:
     networks:
       - workeasy_default
     container_name: auth-service
-    ports:
-      - "3001:3001"
     volumes:
       - ./services/auth-service:/app
     command: npx ts-node-dev --respawn --transpile-only src/app.ts
     env_file:
       - ./services/auth-service/.env
-    depends_on:
-      - mongo
+
 
   company-service:
     build:
@@ -40,19 +39,29 @@ services:
     - "traefik.enable=true"
     - "traefik.http.routers.company.rule=PathPrefix(`/api/companies`)"
     - "traefik.http.services.company.loadbalancer.server.port=3000"
-   
     networks:
       - workeasy_default
-    ports:
-      - "3000:3000"
     volumes:
       - ./services/company-services:/app
     command: npx ts-node-dev --respawn --transpile-only src/app.ts
     env_file:
       - ./services/company-services/.env
-    depends_on:
-      - mongo
-  
+      
+  subscription-service:
+    build: 
+      context: ./services/subscription-service
+    container_name: subscription-service
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.subscription.rule=PathPrefix(`/api/subscription`)"
+      - "traefik.http.services.subscription.loadbalancer.server.port=3002"
+    networks:
+      - workeasy_default
+    volumes:
+      - ./services/subscription-service:/app
+    command: npx ts-node-dev --respawn --transpile-only src/app.ts
+    env_file:
+      - ./services/subscription-service/.env
   traefik:
     image: traefik:v3.0
     command: 
@@ -64,10 +73,6 @@ services:
       - /var/run/docker.sock:/var/run/docker.sock
     networks:
       - workeasy_default
-
-
-volumes:
-  mongo-data:
 networks:
     workeasy_default:
 

@@ -4,6 +4,7 @@ export interface owner {
     name: string
     img:string
     confirm_password:string
+    company_id:string
     password: string
     number: string
     email: string

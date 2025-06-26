@@ -2,13 +2,13 @@ import { owner } from "../interfaces/interface";
 import { ownermodel } from "../models/owner_model";
 import { hasspassword } from "../utils/hasing";
 
-export const owner_registration = async (userdata: owner, company_id: any): Promise<any> => {
+export const owner_registration = async (userdata: owner): Promise<any> => {
 
     try {
        
         const hashedpassword = await hasspassword(userdata.password)
         const user = await ownermodel.create({
-            company_id: company_id,
+            company_id: userdata.company_id,
             img:userdata.img,
             name: userdata.name,
             password: hashedpassword,

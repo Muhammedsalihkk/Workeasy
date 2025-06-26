@@ -11,6 +11,6 @@ app.use(express.json())
 db_connection()
 app.use('/auth', authrouter)
 app.listen(3001, () => {
-    console.log("server running")
+    console.log("authserever is running")
 })
 app.use(errorhadller)

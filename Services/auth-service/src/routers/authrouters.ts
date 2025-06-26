@@ -14,7 +14,7 @@ import { is_supaeradmin } from '../middlewares/superadmin_authrzation'
 
 const router = express.Router()
 router.get('/superadmin/getprofile',is_supaeradmin,getowner_profile)
-router.post('/owner/register/:id',owneregister)
+router.post('/owner/register/',owneregister)
 router.post('/owner/login',owner_authenticqtion)
 router.get('/owner/get_profile',authentication_verify,getowner_profile)
 router.get('/owner/get_profile/:id',is_supaeradmin,getowner_profile)

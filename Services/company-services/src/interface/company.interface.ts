@@ -20,6 +20,7 @@ export interface company extends Document{
     phonenumber:number,
     logo?:string
     block:boolean
+    registration_status:String
     email:string
     status:string
     admin_name:string,

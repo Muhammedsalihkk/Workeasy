@@ -5,6 +5,8 @@ function Paymenet({message}) {
     const [selectedPlan, setSelectedPlan] = useState(false);
     const [hoveredPlan, setHoveredPlan] = useState('');
     const [paymentMethod, setPaymentMethod] = useState('card');
+
+   
     return ( 
         <>
             <div className="flex justify-center mb-4">

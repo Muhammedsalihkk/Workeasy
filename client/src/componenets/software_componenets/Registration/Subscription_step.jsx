@@ -1,9 +1,53 @@
-import React from 'react'
-import { useState } from 'react';
 
-function Subscription_step({sendmessgae}) {
-    const [hoveredPlan,setHoveredPlan]=useState('')
-     const [selectedPlan, setSelectedPlan] = useState(false);
+import { useState,useEffect } from 'react';
+
+function Subscription_step({ sendmessgae }) {
+    const [hoveredPlan, setHoveredPlan] = useState('')
+    const [selectedPlan, setSelectedPlan] = useState(false);
+
+     useEffect(() => {
+    const scriptId = "razorpay-script";
+    if (!document.getElementById(scriptId)) {
+      const script = document.createElement("script");
+      script.id = scriptId;
+      script.src = "https://checkout.razorpay.com/v1/checkout.js";
+      script.async = true;
+      document.body.appendChild(script);
+    }
+  }, []);
+
+const handlePayment = async () => {
+  if (!window.Razorpay) {
+    alert("Razorpay SDK not loaded. Please try again.");
+    return;
+  }
+
+  const options = {
+    key: "rzp_test_wLfumijXK4YGve", // ✅ Your test key
+    amount: 50000, // ₹500 in paise
+    currency: "INR",
+    name: "Your Company Name",
+    description: "Premium Plan",
+    handler: function (response) {
+      alert("✅ Payment successful!\nPayment ID: " + response.razorpay_payment_id);
+    console.log("🎉 Payment successful!");
+    console.log("Payment ID:", response);
+
+    },
+    prefill: {
+      name: "Muhammed Salih",
+      email: "salih@example.com",
+    },
+    theme: {
+      color: "#3399cc",
+    },
+  };
+
+  const rzp = new window.Razorpay(options);
+  rzp.open();
+};
+
+
 
     const Subscription = [
 
@@ -32,7 +76,7 @@ function Subscription_step({sendmessgae}) {
 
 
     ]
-    return (    
+    return (
         <>
             <h2 className="text-2xl font-bold text-gray-800">Choose a Subscription Plan</h2>
             <div className="grid grid-cols-1  md:grid-cols-1 gap-6">
@@ -67,10 +111,8 @@ function Subscription_step({sendmessgae}) {
                             </ul>
                             <button
                                 className="mt-4 w-full py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition-colors"
-                                onClick={(e) => {
-                                    e.stopPropagation();
-                                    sendmessgae(plan.id);
-                                }}
+                                onClick={()=>{sendmessgae(3)
+                                    handlePayment()}}
                             >
                                 Select Plan
                             </button>

@@ -103,7 +103,7 @@ function Registration() {
                   {!selectedPlan ? (
                    <Subscription_step sendmessgae={setSelectedPlan}/>
                   ) : (
-                    <Paymenet message={setSelectedPlan}/>
+                    <Paymenet message={setCurrentStep}/>
                   )}
                 </div>
               )}

@@ -4,6 +4,9 @@ import { company_model } from "../models/company_schema"
 export const register_service= async(companydata:company,admin:any,subscription:any):Promise<any>=>{
     try{
         const {address}=companydata
+        const found= await company_model.findOne({$or:[{email:companydata.email},{phonenumber:companydata.phonenumber}]}).select("registration_status")
+        if(found) return found
+
         const result=await company_model.create({
             legalname:companydata.legalname,  
             date:companydata.date,  
@@ -15,9 +18,6 @@ export const register_service= async(companydata:company,admin:any,subscription:
             annual_revanue:companydata.annual_revanue,
             phonenumber:companydata.phonenumber,
             email:companydata.email,
-            admin_name:admin.name,
-            plan_type:subscription.plan_type,
-            plan_end:subscription.plan_end,
             address:{
                 place:address.place,
                 pin:address.pin,
