@@ -7,7 +7,6 @@ const db_schema=new Schema({
     plan_start:{type:String,required:true},
     plan_end:{type:String,required:true},
     amount:{type:Number,required:true},
-    method:{type:String,required:true},
     payment_id:{type:String,required:true}
 
 })

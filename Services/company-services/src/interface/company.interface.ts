@@ -12,12 +12,11 @@ export interface company extends Document{
     legalname:string,
     date:string,    
     tradingname:string,
-    registration_number:number,
+    registration_number:string,
     GST_number:string,
     company_type:string,
     primary_industry:string,
-    annual_revanue?:number,
-    phonenumber:number,
+    phonenumber:string,
     logo?:string
     block:boolean
     registration_status:String
@@ -26,6 +25,4 @@ export interface company extends Document{
     admin_name:string,
     plan_type:string,
     plan_end:string
-    address:address
-
 }

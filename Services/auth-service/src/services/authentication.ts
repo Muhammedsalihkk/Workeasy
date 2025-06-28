@@ -36,37 +36,38 @@ export const employee_authentication_service=async(data:any):Promise<any>=>{
         throw err
     }
     }
-    catch(err){
-        return err
+    catch(err:any){
+        return err.message
     }
 }   
 export const owner_authentication_service=async(data:any):Promise<any>=>{
     try{
         const owner:any=await ownermodel.find({email:data.email}) 
+       
+        
     if(owner.length==0)
     {
+        console.log("owner",owner);
+        
         const err:any=new Error("user not existing")
         err.code=404
         throw err
     }
     
     
-    if(owner[0].role=="companyadmin")
-    {
-        const company_blocked=await is_blocked(owner[0].company_id) 
-    if(company_blocked)
+    if(owner[0].block)
     {
         const err:any=new Error("this company blocked from our part")
         err.code=403
         throw err
-    }
+    
 }
     const encoded_password=await decode_password(data.password,owner[0].password)
     if(encoded_password)
     {    
         const owner_data:any={owner_id:owner[0]._id.toString(),company_id:owner[0].company_id,role:owner[0].role}
         const jwt_token=jwt_creation(owner_data)
-        return jwt_token
+        return {token:jwt_token,role:owner[0].role}
     }
     else{
         const err:any=new Error("password not match")
@@ -74,7 +75,7 @@ export const owner_authentication_service=async(data:any):Promise<any>=>{
         throw err
     }
     }
-    catch(err){
+    catch(err:any){
         throw err
     }
 }   

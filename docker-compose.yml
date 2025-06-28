@@ -26,7 +26,7 @@ services:
     container_name: auth-service
     volumes:
       - ./services/auth-service:/app
-    command: npx ts-node-dev --respawn --transpile-only src/app.ts
+    command: npx ts-node src/app.ts
     env_file:
       - ./services/auth-service/.env
 
@@ -43,7 +43,8 @@ services:
       - workeasy_default
     volumes:
       - ./services/company-services:/app
-    command: npx ts-node-dev --respawn --transpile-only src/app.ts
+    command: npx ts-node src/app.ts
+
     env_file:
       - ./services/company-services/.env
       
@@ -59,7 +60,7 @@ services:
       - workeasy_default
     volumes:
       - ./services/subscription-service:/app
-    command: npx ts-node-dev --respawn --transpile-only src/app.ts
+    command: npx ts-node src/app.ts
     env_file:
       - ./services/subscription-service/.env
   traefik:

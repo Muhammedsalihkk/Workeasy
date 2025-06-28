@@ -13,11 +13,14 @@ export const owneregister = async (req: Request, res: Response, next: NextFuncti
             err.code = 400
             throw err
         }
-        
+            console.log(req.body);
+            
         const result: any = await owner_registration(req.body)
+        
+        
 
         if (typeof result == "object" && result != null) {
-            const response:string= await send_message({id:req.body.company_id,admin_name:req.body.name,status:"active",registration_status:"completed"})
+            const response:string= await send_message({id:req.body.company_id,admin_name:req.body.admin_name,status:"active",registration_status:"completed"})
             if(response=="success")
             {
                  res.status(200).json({ message: result })

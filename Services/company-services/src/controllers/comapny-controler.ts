@@ -6,18 +6,19 @@ import { delete_services } from "../services/editcompany"
 export const register_company=async(req:Request,res:Response,next:NextFunction):Promise<void>=>{
   
       try{
-        const {error}=validation_company.validate(req.body.company)
+        console.log(req.body);
+        
+        const {error}=validation_company.validate(req.body)
         
         if(error){
            const err:any=new Error(error.details[0].message)
            err.code=400
            throw err
         }
-       const {company,admin,subscription}=req.body
-        const result:any= await register_service(company,admin,subscription)
+        const result:any= await register_service(req.body)
         if(typeof result=="object"&&result!=null)
         {          
-          res.status(200).json({message:result.id})
+          res.status(200).json({message:result.id,status:result.registration_status})
         }
         else{
             const err:any=new Error(result)

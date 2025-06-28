@@ -5,10 +5,15 @@ import { connectdb } from "./config/db";
 import { errorhandling } from "./middlewares/errorhadling";
 import cookieParser from "cookie-parser"
 import { recivemessage } from "./config/Rabitmq.connection";
+import cors from 'cors'
 
 const app=express()
 connectdb()
 recivemessage()
+app.use(cors({
+  origin:"http://localhost:5173",
+  credentials:true
+}))
 app.use(express.json())
 app.use(cookieParser())
 app.use('/api',companeyrouter)

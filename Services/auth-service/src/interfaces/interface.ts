@@ -1,7 +1,7 @@
 import { Document } from "mongoose";
 
 export interface owner {
-    name: string
+    admin_name: string
     img:string
     confirm_password:string
     company_id:string

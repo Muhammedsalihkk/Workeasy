@@ -1,29 +1,63 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import Company_step from '../Registration/Company_step';
 import Admin_step from '../Registration/Admin_step';
-import Paymenet from '../Registration/Paymenet';
+import { useFormik } from 'formik';
+import * as yup from 'yup'
 import Subscription_step from '../Registration/Subscription_step';
 import { useNavigate } from 'react-router-dom';
-
+import { useSelector, useDispatch } from 'react-redux';
+import { owner_login } from '../../Redux/Slice/Owner_slices/Login';
 
 function Login() {
-  const [role,setRole]=useState('')
+  const dispatch = useDispatch()
+  const { owner_login_response, loading, error } = useSelector((state) => state.owner_login)
+    const navigate = useNavigate('')
+  const [role,setrole]=useState('')
+  const [err,setError]=useState("")
+  useEffect(() => {
+    if (error) {
+      setError(error.error)
+    }
+    if(owner_login_response){
+        if(owner_login_response.message=="companyadmin")
+        {
+          navigate('/comapny_admin')
+        }    
+    }
+  }, error, owner_login_response)
+  const formik = useFormik({
+    initialValues: {
+      email: "",
+      password: "",
+      role: ""
+    },
+    validationSchema: yup.object({
+      email: yup.string().email('enter valid email').required("email requird"),
+      password: yup.string().required("password required"),
+      role: yup.string().required("Please select your role")
+    }),
+    validateOnMount: true,
+    onSubmit: (value) => {
+      if (value.role == "admin") {
+        dispatch(owner_login(value))
+       
+      }
 
-  const navigate=useNavigate('')
-
+    }
+  })
   return (
-      <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center p-4">
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center p-4">
       <div className="w-full max-w-md">
         <div className="text-center mb-10">
-          <div className="mx-auto bg-gradient-to-r  text-white w-22 h-16 rounded-xl flex items-center justify-center mb-4" onClick={()=>navigate('/')}>
-             <img src="https://d3bql97l1ytoxn.cloudfront.net/app_resources/422275/thumbs_112/img6234590148314030139-2x.png" className='w-25' alt="" />
+          <div className="mx-auto bg-gradient-to-r  text-white w-22 h-16 rounded-xl flex items-center justify-center mb-4" onClick={() => navigate('/')}>
+            <img src="https://d3bql97l1ytoxn.cloudfront.net/app_resources/422275/thumbs_112/img6234590148314030139-2x.png" className='w-25' alt="" />
           </div>
           <h1 className="text-3xl font-bold text-gray-800">Welcome Back</h1>
           <p className="text-gray-600 mt-2">Sign in to your account</p>
         </div>
 
         <div className="bg-white rounded-2xl shadow-xl p-8">
-          <form  className="space-y-6">
+          <form className="space-y-6" onSubmit={formik.handleSubmit}>
             {/* Email Field */}
             <div>
               <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">
@@ -39,13 +73,16 @@ function Login() {
                   id="email"
                   name="email"
                   type="email"
+                  onBlur={formik.handleBlur}
+                  onChange={formik.handleChange}
+                  value={formik.email}
                   autoComplete="email"
                   required
-                  
                   placeholder="you@company.com"
                   className="block w-full pl-10 pr-3 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition"
                 />
               </div>
+              {formik.touched.email && formik.errors.email && (<p className='text-red-500'>{formik.errors.email}</p>)}
             </div>
 
             {/* Password Field */}
@@ -63,13 +100,15 @@ function Login() {
                   id="password"
                   name="password"
                   type="password"
+                  value={formik.values.password}
                   autoComplete="current-password"
-                  required
-                 
+                  onChange={formik.handleChange}
+                  onBlur={formik.handleBlur}
                   placeholder="••••••••"
                   className="block w-full pl-10 pr-3 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition"
                 />
               </div>
+              {formik.touched.password && formik.errors.password && (<p className='text-red-500'>{formik.errors.password}</p>)}
             </div>
 
             {/* Role Selection */}
@@ -79,11 +118,13 @@ function Login() {
               </label>
               <div className="grid grid-cols-2 gap-4">
                 {/* Employee Card */}
-                <div 
-                  className={`relative border-2 rounded-xl p-4 cursor-pointer transition-all duration-300 ${role === 'employee' ? 'border-blue-500 bg-blue-50' : 'border-gray-200 hover:border-blue-300'}`}
-                  onClick={() => setRole('employee')}
+                <div
+                  className={`relative border-2 rounded-xl p-4 cursor-pointer transition-all duration-300 ${formik.values.role == 'employee' ? 'border-blue-500 bg-blue-50' : 'border-gray-200 hover:border-blue-300'}`}
+                  onClick={() => {
+                    formik.setFieldValue("role", "employee")
+                  }}
                 >
-                  {role === 'employee' && (
+                  {formik.values.role === 'employee' && (
                     <div className="absolute top-2 right-2 bg-blue-500 rounded-full w-5 h-5 flex items-center justify-center">
                       <svg xmlns="http://www.w3.org/2000/svg" className="h-3 w-3 text-white" viewBox="0 0 20 20" fill="currentColor">
                         <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
@@ -93,17 +134,16 @@ function Login() {
                   <div className="flex flex-col items-center">
                     <div className="bg-gray-200 border-2 border-dashed rounded-xl w-16 h-16" >
                       <img src="https://thumbs.dreamstime.com/b/modern-geometric-logo-features-construction-theme-flat-style-includes-worker-hammer-cityscape-using-primary-color-380028409.jpg" className='w-100' alt="" />
-                      </div>
+                    </div>
                     <span className="mt-3 font-medium text-gray-800">Employee</span>
                   </div>
                 </div>
-
                 {/* Admin Card */}
-                <div 
-                  className={`relative border-2 rounded-xl p-4 cursor-pointer transition-all duration-300 ${role === 'admin' ? 'border-blue-500 bg-blue-50' : 'border-gray-200 hover:border-blue-300'}`}
-                  onClick={() => setRole('admin')}
+                <div
+                  className={`relative border-2 rounded-xl p-4 cursor-pointer transition-all duration-300 ${formik.values.role == 'admin' ? 'border-blue-500 bg-blue-50' : 'border-gray-200 hover:border-blue-300'}`}
+                  onClick={() => formik.setFieldValue("role", "admin")}
                 >
-                  {role === 'admin' && (
+                  {formik.values.role == 'admin' && (
                     <div className="absolute top-2 right-2 bg-blue-500 rounded-full w-5 h-5 flex items-center justify-center">
                       <svg xmlns="http://www.w3.org/2000/svg" className="h-3 w-3 text-white" viewBox="0 0 20 20" fill="currentColor">
                         <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
@@ -113,11 +153,12 @@ function Login() {
                   <div className="flex flex-col items-center">
                     <div className=" border-2 border-dashed rounded-xl w-16 h-16" >
                       <img src="https://media.istockphoto.com/id/628884910/vector/real-estate-developer-entrepreneur-concept.jpg?s=612x612&w=0&k=20&c=Cp83P0XqWrg9lgc-eO6JGdWJZEqTksWwgNqIHQErTCc=" className='w-15' alt="owner" />
-                      </div>
-                    
+                    </div>
+
                     <span className="mt-3 font-medium text-gray-800">Company Admin</span>
                   </div>
                 </div>
+                {formik.touched.role && formik.errors.role && (<p className='text-red-500'>{formik.errors.role}</p>)}
               </div>
             </div>
 
@@ -128,12 +169,13 @@ function Login() {
                   id="remember-me"
                   name="remember-me"
                   type="checkbox"
-                 
+
                   className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
                 />
                 <label htmlFor="remember-me" className="ml-2 block text-sm text-gray-700">
                   Remember me
                 </label>
+                
               </div>
               <div className="text-sm">
                 <a href="#" className="font-medium text-blue-600 hover:text-blue-500">
@@ -141,12 +183,17 @@ function Login() {
                 </a>
               </div>
             </div>
-
+                 <div className='flex justify-center'> {err&&<p className='text-red-600'>{err}</p> }</div>
             {/* Submit Button */}
-            <div>
+            <div className='flex justify-center'>
               <button
+                disabled={!(formik.isValid && formik.dirty)}
                 type="submit"
-                className="w-full bg-gradient-to-r from-blue-500 to-indigo-600 text-white py-3 px-4 rounded-xl font-medium hover:from-blue-600 hover:to-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-all duration-300 shadow-md hover:shadow-lg"
+                className={`px-4 py-2 rounded-md w-30 text-white transition-colors duration-300 
+              ${!(formik.isValid && formik.dirty)
+                    ? "bg-gray-400 cursor-not-allowed"
+                    : "bg-blue-500 hover:bg-blue-600"}`}
+
               >
                 Sign In
               </button>
@@ -154,7 +201,7 @@ function Login() {
           </form>
         </div>
 
-        <div className="text-center mt-8 text-sm text-gray-600" onClick={()=>navigate('/registration')}>
+        <div className="text-center mt-8 text-sm text-gray-600" onClick={() => navigate('/registration')}>
           Don't have an account?
           <a href="#" className="font-medium text-blue-600 hover:text-blue-500">
             Get started

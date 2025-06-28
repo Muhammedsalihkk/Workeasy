@@ -7,9 +7,7 @@ export const send_message=async(data:any)=>{
     const channel=await connection.createChannel()
     const queue='workqueue'
     await channel.assertQueue(queue)
-    channel.sendToQueue(queue,Buffer.from(JSON.stringify(data)),{persistent:true})
-    console.log("now it time to close channel ");
-    
+    channel.sendToQueue(queue,Buffer.from(JSON.stringify(data)),{persistent:true})    
     await channel.close()
     await connection.close()
     return "success"

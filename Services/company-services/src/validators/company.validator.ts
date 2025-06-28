@@ -4,11 +4,10 @@ import  Joi, { required, string } from 'joi'
 export const validation_company=Joi.object({
     legalname:Joi.string().required(),
     tradingname:Joi.string().required(),
-    registration_number:Joi.number().required().max(9999999999).min(10000),
+    registration_number:Joi.string().required(),
     company_type:Joi.string().required(),
     primary_industry:Joi.string().required(),
-    annual_revanue:Joi.number(),
-    phonenumber:Joi.number().required().max(9999999999).min(1000000000),
+    phonenumber:Joi.string().required(),    
     email:Joi.string().required(),
     date:Joi.string().required(),
     logo:Joi.string(),
@@ -19,6 +18,6 @@ export const validation_company=Joi.object({
         distict:Joi.string().required(),
         state:Joi.string().required(),
 
-    }).required()
+    })
 
 }).options({convert:false})

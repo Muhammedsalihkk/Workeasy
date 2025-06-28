@@ -7,8 +7,10 @@ export const recivemessage = async () => {
     const channel = await connection.createChannel()
     const queue = 'workqueue'
     const queue1 = 'authservice'
+    const queue2="editname"
     await channel.assertQueue(queue)
     await channel.assertQueue(queue1)
+    await channel.assertQueue(queue2)
     await channel.consume(queue, async (msg) => {
         if (msg !== null) {
             const data: any = JSON.parse(msg.content.toString())
@@ -20,11 +22,37 @@ export const recivemessage = async () => {
     })
     await channel.consume(queue1, async (msg) => {
         if (msg !== null) {
+           try{
             const data: any = JSON.parse(msg.content.toString())
-            console.log("recivemessage", data);
+            console.log("recivemessage",data);
             await company_model.findByIdAndUpdate(data.id, data)
+        }
+        catch(error){
+            console.log("Rabitmq",error);
+            
+        }
+        finally{
             channel.ack(msg)
         }
+            
+        }
+    })
+    await channel.consume(queue2, async (msg)=>{
+        if(msg!=null)
+        {
+           try{
+             const data:any=JSON.parse(msg.content.toString())
+            const updated=data.admin_name
+            await company_model.findByIdAndUpdate(data.id,updated)
+        }catch(error){
+            console.log("Rabitmq",error);
+            
+        }
+        finally{
+            channel.ack(msg)
+        }       
+        }
+            
     })
    
 

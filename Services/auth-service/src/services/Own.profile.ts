@@ -28,7 +28,7 @@ export const getowner_profile_service = async (id: string) => {
                      return data
               }
        }
-       catch (error) {
-              throw error
+       catch (error:any) {
+              throw error.message
        }
 }

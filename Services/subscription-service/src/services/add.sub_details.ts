@@ -10,7 +10,6 @@ export const add_subdetials_service=async(data:sub_data)=>{
         plan_start:data.plan_start,
         plan_end:data.plan_end,
         amount:data.amount,
-        method:data.method,
         payment_id:data.payment_id  
     })
     return result

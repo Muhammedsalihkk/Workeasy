@@ -6,7 +6,6 @@ export interface sub_data extends Document{
     plan_start:string,
     plan_end:string,
     amount:number,
-    method:string,
     payment_id:string
 
 }

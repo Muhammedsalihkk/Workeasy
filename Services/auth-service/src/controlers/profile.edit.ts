@@ -3,6 +3,7 @@ import { delete_employee, edit_employee_profile } from "../services/Eprofile";
 import { edit_owner_profile } from "../services/Own.profile";
 import { event } from "../middlewares/evnet_emitter";
 import { event_emiter } from "../services/company_db";
+import { send_message } from "../config/rabitmq";
 
 
 export const Profile_edit = async (req: Request, res: Response, next: NextFunction) => {
@@ -12,7 +13,10 @@ export const Profile_edit = async (req: Request, res: Response, next: NextFuncti
         req.body.updation_id=req.body.id||res.locals.user_id
         if(req.body.id||res.locals.role=="employee")
         {
-            const respons = await edit_employee_profile(req.body)  
+            const respons = await edit_employee_profile(req.body)
+            if(respons){
+                const respons=await send_message(req.body)
+            }  
             res.status(200).json({ respons })
         }
         else{
