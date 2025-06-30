@@ -1,27 +1,33 @@
 import React, { useState } from 'react';
-import { 
-  HomeIcon, 
-  ChartBarIcon, 
-  UserGroupIcon, 
-  ShoppingBagIcon, 
-  TagIcon, 
+import {
+  HomeIcon,
+  ChartBarIcon,
+  UserGroupIcon,
+  ShoppingBagIcon,
+  TagIcon,
   ChatBubbleLeftRightIcon,
   XMarkIcon,
   Bars3Icon,
-  ChevronDownIcon
+  ChevronDownIcon,
+  BellIcon,
+  BuildingOffice2Icon,
+  ArrowTrendingUpIcon
 } from '@heroicons/react/24/outline';
+import { User2Icon } from 'lucide-react';
 
-const Sidebar = () => {
+const Sidebar = ({ message }) => {
   const [isOpen, setIsOpen] = useState(false);
-  const [activeItem, setActiveItem] = useState('Analytics');
+  const { activeItem, setActiveItem } = message
 
   const navItems = [
     { name: 'Dashboard', icon: HomeIcon },
     { name: 'Analytics', icon: ChartBarIcon },
-    { name: 'Stock Details', icon: UserGroupIcon },
+    { name: 'Employees', icon: UserGroupIcon },
     { name: 'Orders', icon: ShoppingBagIcon },
-    { name: 'Notification', icon: TagIcon },
-    { name: 'Comapny profile', icon: ChatBubbleLeftRightIcon },
+    { name: 'Notification', icon: BellIcon },
+    { name: 'CompanyProfile', icon: BuildingOffice2Icon },
+    { name: 'Stocks', icon: ArrowTrendingUpIcon },
+    { name: "Admin profile", icon: User2Icon }
   ];
 
   const metrics = [
@@ -31,9 +37,9 @@ const Sidebar = () => {
   ];
 
   return (
-    < div>
+    < div >
       {/* Mobile menu button */}
-      <button 
+      <button
         onClick={() => setIsOpen(true)}
         className="fixed top-4 left-4 z-30 p-2 rounded-lg bg-gray-800 text-white lg:hidden"
       >
@@ -42,19 +48,19 @@ const Sidebar = () => {
 
       {/* Overlay for mobile */}
       {isOpen && (
-        <div 
+        <div
           className="fixed inset-0  bg-opacity-50 z-40 lg:hidden"
           onClick={() => setIsOpen(false)}
         ></div>
       )}
 
       {/* Sidebar */}
-      <div 
+      <div
         className={`fixed top-0 left-0 h-full w-64 bg-gray-200 text-black z-50 transform transition-transform duration-300 ease-in-out
           ${isOpen ? 'translate-x-0' : '-translate-x-full'} lg:translate-x-0 lg:static lg:h-screen`}
       >
         {/* Close button for mobile */}
-        <button 
+        <button
           onClick={() => setIsOpen(false)}
           className="absolute top-4 right-4 p-1 rounded-full bg-gray- text-white lg:hidden"
         >
@@ -64,8 +70,14 @@ const Sidebar = () => {
         <div className="flex flex-col h-full p-5">
           {/* Logo */}
           <div className="mb-10 grid justify-center  px-2">
-             <img src="https://d3bql97l1ytoxn.cloudfront.net/app_resources/422275/thumbs_112/img6234590148314030139-2x.png" className='w-18 ml-5' alt="" />
-            <h1 className="text-2xl font-bold text-black">Analytica</h1>
+            <div className="w-20 h-20 rounded-full ml-3 overflow-hidden">
+              <img
+                src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT5e3Q2Y7kgmlwt_I4ah-twm-ltwubD5FZJCQ&s"
+                className="w-full h-full object-cover mb-10"
+                alt=""
+              />
+            </div>
+            <h1 className="text-2xl font-bold mt-5 text-black">TechCorp </h1>
           </div>
 
           {/* Navigation */}
@@ -75,11 +87,10 @@ const Sidebar = () => {
                 <li key={item.name}>
                   <button
                     onClick={() => setActiveItem(item.name)}
-                    className={`w-full flex items-center px-4 py-3 rounded-lg transition-all ${
-                      activeItem === item.name 
-                        ? 'bg-black text-white' 
+                    className={`w-full flex items-center px-4 py-3 rounded-lg transition-all ${activeItem === item.name
+                        ? 'bg-black text-white'
                         : 'hover:bg-gray-400'
-                    }`}
+                      }`}
                   >
                     <item.icon className="h-5 w-5 mr-3" />
                     <span>{item.name}</span>
@@ -91,24 +102,6 @@ const Sidebar = () => {
               ))}
             </ul>
           </nav>
-
-          {/* Metrics Section */}
-            <div onClick={()=>{
-              setActiveItem("profile")
-            }}
-             className={`mt-auto flex items-center p-2 rounded-lg ${
-              activeItem=="profile"?'bg-black text-white':
-              'hover:bg-gray-400'
-             }`}>
-             
-            <div className="bg-gray-200 border-2 border-dashed rounded-xl w-10 h-10" />
-            <div className="ml-3">
-              <p className="font-medium">Admin User</p>
-              <p className="text-sm text-black-400">admin@analytica.com</p>
-            </div>
-          </div>
-       
-          
         </div>
       </div>
     </div>
