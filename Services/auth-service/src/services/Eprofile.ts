@@ -1,5 +1,7 @@
+import { activities_model } from "../models/Activities";
 import { employeemodel } from "../models/employee_model";
 import { ownermodel } from "../models/owner_model";
+import { add_activity } from "./Addtoactivity";
 
 export const getemployee_profile_service=async(id:string)=>{
   try{    
@@ -11,18 +13,21 @@ export const getemployee_profile_service=async(id:string)=>{
   }
 }
 
-export const edit_employee_profile=async(profile_data:any)=>{
+export const edit_employee_profile=async(profile_data:any,id:string)=>{
      
-      try{
-          const updated_one=await employeemodel.findOneAndUpdate(
-                {employee_id:profile_data.updation_id,
-                company_id:profile_data.company_id},
-                {$set:profile_data},
-                {new:true}
-        ).select("-password")
+      try{    
+        console.log("id is ",profile_data);
+        
+         const updated_one= await employeemodel.findByIdAndUpdate(id,
+          {...profile_data},
+          {new:true,runValidators:true})
+         
+           console.log("updated data",updated_one);
         return updated_one
+       
+        
       }
-      catch(error){
+      catch(error){        
         throw error
       }
 }

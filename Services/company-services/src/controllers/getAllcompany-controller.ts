@@ -26,7 +26,7 @@ export const getallcompany = async (req: Request, res: Response,next:NextFunctio
 }
 export const get_Onecompany = async (req: Request, res: Response,next:NextFunction): Promise<void> => {
     try {
-        const { id } = req.params
+        const id  = req.params.id||res.locals.company_id
         const data = await Onecompany_service(id)
         if (!data) {
          const err:any=new Error("id not match with any comapny")

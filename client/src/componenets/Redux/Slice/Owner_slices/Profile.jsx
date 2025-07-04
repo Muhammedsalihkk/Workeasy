@@ -9,8 +9,7 @@ export const Owner_profile_get=createAsyncThunk('owner/profile_get',async(data,t
             return response.data
         }
         catch(error){
-            console.log(error);
-            
+            console.log(error)
             return thunkAPI.rejectWithValue(error.response.data)
         }
 })
@@ -28,6 +27,8 @@ const owner_profile=createSlice({
                     state.loading=true
                 })
                 .addCase(Owner_profile_get.fulfilled,(state,action)=>{
+                    console.log(action.payload.data);
+                    
                     state.owner_profile_response=action.payload,
                     state.loading=false
                 })

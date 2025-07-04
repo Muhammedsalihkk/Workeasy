@@ -9,6 +9,8 @@ import ScrollToTop from './componenets/software_componenets/middlewares/Scrollto
 import Advance from './componenets/software_componenets/inform/Advance'
 import FinancialDashboard from './componenets/sotware_admin/Sample'
 import Comapany_ui from './componenets/company_admin/Main'
+import AdminProfile from './componenets/company_admin/Admin_Profile'
+import path from 'path'
 
 function App() {
   const activeFAQ="index"
@@ -24,7 +26,7 @@ function App() {
             <Route element={<Login/>} path='/login'/>
             <Route element={<Taskmanagment/>} path='/taskmanagment'/>
             <Route element={<Teamcollabration/>} path='/Teamcollabration'/>
-            <Route element={<Advance/>} path='/Analytics'/>
+            <Route element={<AdminProfile/>} path='asdfjygoweu'/>
             <Route element={<Comapany_ui/>} path='/comapny_admin' />
           </Routes>
             

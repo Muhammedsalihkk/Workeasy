@@ -1,11 +1,18 @@
 import { Response ,Request, NextFunction } from "express";
 import { delete_services, editcompany_services } from "../services/editcompany";
+import { uploadimage } from "../middlewares/Cloudinarystoring";
 
 
 export const editcompany=async(req:Request,res:Response,next:NextFunction):Promise<void>=>{
   try{
-    const updateddata=req.body
-    const {id}=req.params
+    if(req.file?.path){
+      const imgurl= await uploadimage(req.file.path)
+      console.log("this si your file path",req.file.path);
+      
+      req.body.logo=imgurl
+    }
+    const updateddata=req.body    
+    const id=res.locals.company_id
     const result:any=await editcompany_services(id,updateddata)
   
     if(result)

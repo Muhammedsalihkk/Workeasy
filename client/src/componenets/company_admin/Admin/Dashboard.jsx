@@ -1,30 +1,87 @@
 // src/ProductionDashboard.js
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { LineChart, BarChart, Bar, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 import { Statistic, Table, Tag, Card } from 'antd';
 import { FiDollarSign, FiUsers, FiShoppingCart, FiTrendingUp } from 'react-icons/fi';
 import { ArrowUpOutlined, ArrowDownOutlined, HomeFilled } from '@ant-design/icons';
-import Header from './Header';
+
 import { BellIcon, LayoutDashboard, LayoutDashboardIcon } from 'lucide-react';
 import { HomeIcon } from '@heroicons/react/24/outline';
+import Header from '../Header';
+import { getall_employee } from '../../Redux/Slice/Employee/AllEmployees';
+import { useDispatch, useSelector } from 'react-redux';
+import { DashBoard_data } from '../../Redux/Slice/Company_slice/Dashbord';
 
-// Mock data for charts and tables
 const revenueData = [
+        { title: 'Total Revenue', value: '$42,567', change: '+12.5%', icon: <FiDollarSign className="text-2xl" />, color: 'bg-gradient-to-r from-blue-500 to-indigo-600' },
+    { title: 'Active Users', value: '8,492', change: '+8.3%', icon: <FiUsers className="text-2xl" />, color: 'bg-gradient-to-r from-green-500 to-emerald-600' },
+    { title: 'New Orders', value: '1,284', change: '-2.1%', icon: <FiShoppingCart className="text-2xl" />, color: 'bg-gradient-to-r from-amber-500 to-orange-500' },
+    { title: 'Conversion Rate', value: '4.8%', change: '+1.2%', icon: <FiTrendingUp className="text-2xl" />, color: 'bg-gradient-to-r from-purple-500 to-fuchsia-600' }
 
 ];
+
 const metrics = [
-   
+     { month: 'Jan', value: 3200 },
+    { month: 'Feb', value: 2800 },
+    { month: 'Mar', value: 3900 },
+    { month: 'Apr', value: 2500 },
+    { month: 'May', value: 3800 },
+    { month: 'Jun', value: 4100 },
 ];
 
 
 const orderData = [
+     { day: 'Mon', value: 35 },
+    { day: 'Tue', value: 42 },
+    { day: 'Wed', value: 28 },
+    { day: 'Thu', value: 51 },
+    { day: 'Fri', value: 38 },
+    { day: 'Sat', value: 22 },
+    { day: 'Sun', value: 18 },
+
+
 ];
+const recentActivities = [
+  {
+    key: '1',
+    activity: 'Finalized contract for "Ocean Waves"',
+    project: 'Feature Film',
+    time: '2 hours ago',
+    status: 'Completed',
+  },
+  {
+    key: '2',
+    activity: 'Location scouting for "Desert Dreams"',
+    project: 'Documentary',
+    time: '5 hours ago',
+    status: 'In Progress',
+  },
+  {
+    key: '3',
+    activity: 'Casting call for "City Lights"',
+    project: 'TV Series',
+    time: 'Yesterday',
+    status: 'Pending',
+  },
+  {
+    key: '4',
+    activity: 'Budget approval for "Mountain Echoes"',
+    project: 'Short Film',
+    time: '2 days ago',
+    status: 'Completed',
+  },
+  {
+    key: '5',
+    activity: 'Equipment rental for Studio B',
+    project: 'General',
+    time: '3 days ago',
+    status: 'Completed',
+  },
+]
   const header=<div className='flex gap-2.5'>
    <LayoutDashboardIcon className="w-7 h-7 text-gray-700" />
           <h2 className="text-xl font-bold text-gray-800">DashBoard</h2></div>
-const recentActivities = [
-  
-];
+
 
 const columns = [
     {
@@ -57,19 +114,32 @@ const columns = [
     },
 ];
 
-const ProductionDashboard = ({message}) => {
+const AdminDashboard = ({message}) => {
     const [timeRange, setTimeRange] = useState('monthly');
-    const {activeItem, setActiveItem}=message
+    const {employee_count,loading,error}=useSelector((state)=>state.company_dashbord)
+    const {activeItem, setActiveItem,user}=message
+    const [count,setemployeecount]=useState("")
+
+    
+const dispatch=useDispatch()
+
+useEffect(()=>{
+    dispatch(DashBoard_data())
+    
+},[])
+useEffect(()=>{
+    setemployeecount(employee_count?.count)
+    
+},[employee_count])
+
+
     return (
         <div className="min-h-screen bg-gray-50 w-full h-1 overflow-scroll">
             {/* Header */}
 
-            <Header message={header} />
-            {/* Main Content */}
+            <Header message={{header,user}} />
             <main className="p-6 max-w-7xl mx-auto">
-                {/* Metrics Cards */}
-                <div className="md:flex justify-center mb-5 gap-10">
-                    {/* Total Revenue */}
+                <div className="md:flex justify-center mb-5 gap-10">    
                     {metrics.length == 0 ? (<div onClick={()=>setActiveItem("Analytics")} className="col-span-full flex justify-center items-center py-10">
                         <button className="flex items-center gap-2 bg-indigo-600 hover:bg-indigo-700 text-white px-5 py-3 rounded-md shadow-md transition">
                             <svg
@@ -102,25 +172,12 @@ const ProductionDashboard = ({message}) => {
                     </div>)}
 
                     {/* Active Users */}
-                  {metrics.length==0?(<div  onClick={()=>setActiveItem("Employees")}  className="col-span-full flex justify-center items-center py-10">
-                        <button className="flex items-center gap-2 bg-indigo-600 hover:bg-indigo-700 text-white px-5 py-3 rounded-md shadow-md transition">
-                            <svg
-                                xmlns="http://www.w3.org/2000/svg"
-                                className="h-5 w-5"
-                                fill="none"
-                                viewBox="0 0 24 24"
-                                stroke="currentColor"
-                            >
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
-                            </svg>
-                            Add your Employees here
-                        </button>
-                    </div>):(  <div  onClick={()=>setActiveItem("Employees")}  className="bg-white rounded-xl shadow-sm overflow-hidden border border-gray-100 transition-transform hover:translate-y-[-3px] hover:shadow-md">
+              <div  onClick={()=>setActiveItem("Employees")}  className="bg-white rounded-xl shadow-sm overflow-hidden border border-gray-100 transition-transform hover:translate-y-[-3px] hover:shadow-md">
                         <div className="p-5">
                             <div className="flex justify-between items-start">
                                 <div>
                                     <p className="text-gray-500 text-sm">Active Employees</p>
-                                    <h3 className="text-2xl font-bold mt-1 text-gray-800">8,492</h3>
+                                    <h3 className="text-2xl font-bold mt-1 text-gray-800">{count&&count}</h3>
                                     <span className="text-sm font-medium text-green-500">
                                         +8.3% from last {timeRange}
                                     </span>
@@ -131,7 +188,7 @@ const ProductionDashboard = ({message}) => {
                             </div>
                         </div>
                         <div className="h-1 w-full bg-gradient-to-r from-green-500 to-emerald-600"></div>
-                    </div>)}
+                    </div>
 
                     {/* New Orders */}
                    {metrics.length==0?(<div  onClick={()=>setActiveItem("Orders")}  className="col-span-full flex justify-center items-center py-10">
@@ -318,4 +375,4 @@ const ProductionDashboard = ({message}) => {
     );
 };
 
-export default ProductionDashboard;
+export default AdminDashboard;

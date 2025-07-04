@@ -16,6 +16,7 @@ services:
 
   auth-service:
     build:
+  
       context: ./services/auth-service
     labels:
       - "traefik.enable=true"

@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { Line, Bar, Pie } from 'react-chartjs-2';
 import {
     FiActivity,
@@ -29,8 +29,11 @@ import {
     Legend,
     Filler
 } from 'chart.js';
-import Header from './Header';
+
 import { ChartBarBigIcon, ChartBarIcon } from 'lucide-react';
+import Header from '../Header';
+import { getall_employee } from '../../Redux/Slice/Employee/AllEmployees';
+import { useDispatch } from 'react-redux';
 
 // Register Chart.js components
 ChartJS.register(
@@ -46,13 +49,17 @@ ChartJS.register(
     Filler
 );
 
-const AnalyticsDashboard = () => {
+const AnalyticsDashboard = ({message}) => {
     const [sidebarOpen, setSidebarOpen] = useState(true);
     const [timeRange, setTimeRange] = useState('monthly');
     const [notificationOpen, setNotificationOpen] = useState(false);
     const [userMenuOpen, setUserMenuOpen] = useState(false);
     const notificationsRef = useRef(null);
     const userMenuRef = useRef(null);
+    const dispatch=useDispatch()
+    const {user}=message
+ 
+
 
     const header = <div className='flex gap-2.5'>
         <ChartBarIcon className="w-7 h-7 text-gray-700" />
@@ -359,7 +366,7 @@ const AnalyticsDashboard = () => {
     const data=""
 
     return (
-        !data?( <div className="flex flex-col items-center w-full justify-center py-10 bg-white rounded-lg shadow-md border border-gray-200">
+        data?( <div className="flex flex-col items-center w-full justify-center py-10 bg-white rounded-lg shadow-md border border-gray-200">
     <ChartBarIcon className="w-7 h-7 text-gray-700" />
     <p className="text-gray-500 text-lg font-medium">No data analysed yut</p>
     <p className="text-gray-400 text-sm mt-1">You're all caught up!</p>
@@ -367,7 +374,7 @@ const AnalyticsDashboard = () => {
             {/* Main Content */}
             <div className="flex-1 flex flex-col ">
                 {/* Topbar */}
-                <Header message={header} />
+                <Header message={{header,user}} />
                 {/* Time Range Filter */}
                 <div className='mt-10'>
                        <div className="md:flex justify-center mb-5 gap-10">

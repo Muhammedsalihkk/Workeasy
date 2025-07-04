@@ -14,12 +14,14 @@ export const owner_authenticqtion = async (req: Request, res: Response, next: Ne
             throw err
         }
         const response: any = await owner_authentication_service(req.body)
-        res.cookie('token',response.token,{
+        console.log("response",response.token);
+        const {token}=response
+    
+         res.cookie('token',token,{
             httpOnly:true,
-            secure:false,
-            maxAge:60*60*1000
+            maxAge:2*60*60*1000
         })
-        res.status(200).json({message:response.role})
+        res.status(200).json({message:"success"})
 
     }
     catch (error) {

@@ -1,37 +1,52 @@
-import { createAsyncThunk,createSlice } from "@reduxjs/toolkit";
+import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
-export const owner_login=createAsyncThunk('owner/login',async(data,thunkAPI)=>{
-        try{
-            const response= await axios.post('http://localhost/auth/owner/login',data)
-            return response.data
+export const login = createAsyncThunk('owner/login', async (data, thunkAPI) => {
+    try {
+        console.log(data);
+        
+        if(data.role=="admin"){
+             const response = await axios.post('http://localhost/auth/owner/login', data, {
+            withCredentials: true
+        })
+        return response.data
+    }
+    else if(data.role=="employee"){
+            const response = await axios.post('http://localhost/auth/employee/login', data, {
+            withCredentials: true
+        })
+        return response.data
+    }
         }
-        catch(error){
-            return thunkAPI.rejectWithValue(error.response.data)
-        }
+       
+    catch (error) {
+        console.log(error.response.data);
+
+        return thunkAPI.rejectWithValue(error.response.data)
+    }
 })
 
-const login_slice=createSlice({
-    name:"owner_login",
-    initialState:{
-        owner_login_response:"",
-        loading:false,
-        error:null
+const login_slice = createSlice({
+    name: "login",
+    initialState: {
+        login_response: "",
+        loading: false,
+        error: null
     },
-    reducers:{},
-    extraReducers:(builder)=>{
-            builder
-                .addCase(owner_login.pending,(state)=>{
-                    state.loading=true
-                })
-                .addCase(owner_login.fulfilled,(state,action)=>{
-                    state.owner_login_response=action.payload,
-                    state.loading=false
-                })
-                .addCase(owner_login.rejected,(state,action)=>{
-                    state.error=action.payload,
-                    state.loading=false
-                })
-         }   
+    reducers: {},
+    extraReducers: (builder) => {
+        builder
+            .addCase(login.pending, (state) => {
+                state.loading = true
+            })
+            .addCase(login.fulfilled, (state, action) => {
+                state.login_response = action.payload,
+                    state.loading = false
+            })
+            .addCase(login.rejected, (state, action) => {
+                state.error = action.payload,
+                    state.loading = false
+            })
+    }
 })
 
 export default login_slice.reducer

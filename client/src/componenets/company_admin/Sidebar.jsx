@@ -17,27 +17,23 @@ import { User2Icon } from 'lucide-react';
 
 const Sidebar = ({ message }) => {
   const [isOpen, setIsOpen] = useState(false);
-  const { activeItem, setActiveItem } = message
+  const { activeItem, setActiveItem ,role} = message;
 
   const navItems = [
     { name: 'Dashboard', icon: HomeIcon },
-    { name: 'Analytics', icon: ChartBarIcon },
-    { name: 'Employees', icon: UserGroupIcon },
+    role=="admin"&&{ name: 'Analytics', icon: ChartBarIcon },
+    role=="admin"&&{ name: 'Employees', icon: UserGroupIcon },
     { name: 'Orders', icon: ShoppingBagIcon },
+    role=="employee"&&{ name: 'Attendance', icon: UserGroupIcon }, // ✅ Added Attendance
+    role=="employee"&&{ name: 'Salary', icon: TagIcon },           // ✅ Added Salary
     { name: 'Notification', icon: BellIcon },
-    { name: 'CompanyProfile', icon: BuildingOffice2Icon },
+    role=="admin"&&{ name: 'CompanyProfile', icon: BuildingOffice2Icon },
     { name: 'Stocks', icon: ArrowTrendingUpIcon },
-    { name: "Admin profile", icon: User2Icon }
-  ];
-
-  const metrics = [
-    { name: 'Total Revenue', value: '$128,459', change: '+12.5% vs last month' },
-    { name: 'Total Expenses', value: '$64,232', change: '+8.2% vs last month' },
-    { name: 'Net Profit', value: '$64,227', change: '+16.8% vs last month' },
-  ];
+    role=="admin"?{ name: "Admin profile", icon: User2Icon }:{ name: "User profile", icon: User2Icon }
+  ].filter(Boolean)
 
   return (
-    < div >
+    <div>
       {/* Mobile menu button */}
       <button
         onClick={() => setIsOpen(true)}
@@ -49,7 +45,7 @@ const Sidebar = ({ message }) => {
       {/* Overlay for mobile */}
       {isOpen && (
         <div
-          className="fixed inset-0  bg-opacity-50 z-40 lg:hidden"
+          className="fixed inset-0 bg-opacity-50 z-40 lg:hidden"
           onClick={() => setIsOpen(false)}
         ></div>
       )}
@@ -59,7 +55,7 @@ const Sidebar = ({ message }) => {
         className={`fixed top-0 left-0 h-full w-64 bg-gray-200 text-black z-50 transform transition-transform duration-300 ease-in-out
           ${isOpen ? 'translate-x-0' : '-translate-x-full'} lg:translate-x-0 lg:static lg:h-screen`}
       >
-        {/* Close button for mobile */}
+        
         <button
           onClick={() => setIsOpen(false)}
           className="absolute top-4 right-4 p-1 rounded-full bg-gray- text-white lg:hidden"
@@ -68,8 +64,8 @@ const Sidebar = ({ message }) => {
         </button>
 
         <div className="flex flex-col h-full p-5">
-          {/* Logo */}
-          <div className="mb-10 grid justify-center  px-2">
+        
+          <div className="mb-10 grid justify-center px-2">
             <div className="w-20 h-20 rounded-full ml-3 overflow-hidden">
               <img
                 src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT5e3Q2Y7kgmlwt_I4ah-twm-ltwubD5FZJCQ&s"

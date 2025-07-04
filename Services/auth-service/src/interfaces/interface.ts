@@ -12,16 +12,16 @@ export interface owner {
 export interface employee {
     employee_id:string
     name: string
-    img:string,
     shift:String,
     gender:string,
     join_date:string,   
-    confirm_password:string
     password: string
     number: string
     email: string
-    role: string
-    comapny_role: string
+    department:string
+    company_role: string
+    salary:Number
+    qualification:string
 }
 export interface authentication{
     email:string,

@@ -12,16 +12,17 @@ export const validation = Joi.object({
 
 export const employee_validation = Joi.object({
     employee_id:Joi.string().required(),
+    department:Joi.string().required(),
     name: Joi.string().required(),
     join_date:Joi.string().required(),
-    img:Joi.string().required(),
     shift:Joi.string().required(),
     gender:Joi.string().required(),
-    confirm_password:Joi.string().required(),
     password: Joi.string().required(),
     number: Joi.string().pattern(/^[6-9]\d{9}$/).required(),
     email: Joi.string().email().required(),
-    company_role: Joi.string().required()
+    company_role: Joi.string().required(),
+    salary:Joi.number().required(),
+    qualification:Joi.string().required()
 }).options({ convert: false })
 
 export const authData_validation=Joi.object({

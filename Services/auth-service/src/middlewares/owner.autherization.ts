@@ -20,8 +20,12 @@ export const owner_authrization=(req:Request,res:Response,next:NextFunction)=>{
         {
            res.status(403).json({message:"access denied : not an company admin"})
         }
-        else{            
+        else{       
+          console.log(decoded);
+          
             res.locals.company_id=decoded.company_id
+            res.locals.user_id=decoded.owner_id
+            
             next()
         }
 

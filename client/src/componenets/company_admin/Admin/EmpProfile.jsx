@@ -1,30 +1,29 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { FiCalendar, FiClock, FiLogIn, FiLogOut } from 'react-icons/fi';
+import { useDispatch, useSelector } from 'react-redux';
+import { employee_profile_get } from '../../Redux/Slice/Employee/Profile';
+
 
 const EmployeeProfile = ({ message }) => {
     const [activeTab, setActiveTab] = useState('personal');
-    const { setViewEmployee, viewEmployee } = message
-
+    const { setViewEmployee, viewEmployee,employeeid } = message
+    
+    
+    const {employee_profile_response,loading,error}=useSelector((state)=>state.employee_profile)
+    const dispatch=useDispatch()
+    useEffect(()=>{        
+       dispatch(employee_profile_get(employeeid)) 
+    },[])
+    useEffect(()=>{
+        console.log(error);
+        
+        console.log(employee_profile_response.response);
+        setemployee(employee_profile_response.response)
+        
+    },[employee_profile_response,loading])      
     // Employee data
-    const employee = {
-        name: "Sarah Johnson",
-        employeeId: "EMP-2024-001",
-        department: "Design",
-        designation: "Senior Product Designer",
-        shiftTime: "9:00 AM - 6:00 PM",
-        qualification: "BCA",
-        dob: "March 15, 1990",
-        phone: "+1 (555) 123-4567",
-        address: "123 Business Street, Suite 100, San Francisco, CA 94107",
-        gender: "Female",
-        Salary: 234567,
-        email: "sarah.johnson@company.com",
-        daysWorked: 22,
-        totalHours: 176,
-        lastClockIn: "9:00 AM",
-        lastClockOut: "6:00 PM",
-        profilePhoto: null
-    };
+    const [employee,setemployee]=useState()
+    
     const attendanceData = [
         { date: "2023-10-05", day: "Thursday", clockIn: "08:15 AM", clockOut: "05:30 PM", totalHours: 8.25, status: "Present" },
         { date: "2023-10-04", day: "Wednesday", clockIn: "08:30 AM", clockOut: "05:45 PM", totalHours: 8.25, status: "Present" },
@@ -68,15 +67,15 @@ const EmployeeProfile = ({ message }) => {
                             </div>
                         </div>
                         <div className="text-center sm:text-left">
-                            <h1 className="text-3xl font-bold">{employee.name}</h1>
+                            <h1 className="text-3xl font-bold">{employee?.name}</h1>
                             <div className="mt-2 flex flex-wrap gap-4 justify-center sm:justify-start">
                                 <div>
                                     <p className="text-sm opacity-80">Employee ID</p>
-                                    <p className="font-semibold">{employee.employeeId}</p>
+                                    <p className="font-semibold">{employee?.employee_id}</p>
                                 </div>
                                 <div>
                                     <p className="text-sm opacity-80">Department</p>
-                                    <p className="font-semibold">{employee.department}</p>
+                                    <p className="font-semibold">{employee?.department}</p>
                                 </div>
                             </div>
                         </div>
@@ -90,16 +89,16 @@ const EmployeeProfile = ({ message }) => {
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div>
                             <p className="text-sm text-gray-500">Designation</p>
-                            <p className="font-semibold">{employee.designation}</p>
+                            <p className="font-semibold">{employee?.company_role}</p>
                         </div>
                         <div>
                             <p className="text-sm text-gray-500">Shift Time</p>
-                            <p className="font-semibold">{employee.shiftTime}</p>
+                            <p className="font-semibold">{employee?.shift}</p>
                         </div>
                     </div>
                 </div>
                 {/* Stats Section */}
-                <div className="max-w-4xl mx-auto mt-6 flex justify-evenly">
+                {/* <div className="max-w-4xl mx-auto mt-6 flex justify-evenly">
                     <div className="bg-white p-4 rounded-xl shadow-sm border flex items-center space-x-4">
                         <FiCalendar className="text-indigo-600 text-3xl" />
                         <div>
@@ -131,7 +130,7 @@ const EmployeeProfile = ({ message }) => {
                             <p className="text-red-600 text-2xl font-semibold">{employee.lastClockOut}</p>
                         </div>
                     </div>
-                </div>
+                </div> */}
 
                 {/* Tabs */}
                 <div className="flex border-b">
@@ -157,16 +156,16 @@ const EmployeeProfile = ({ message }) => {
                             <div className="grid grid-cols-2 md:grid-cols-3gap-6">
                                 <div className="space-y-4">
                                     <div>
-                                        <h3 className="text-sm font-medium text-gray-500 mb-1">Date of Birth</h3>
-                                        <p className="font-semibold">{employee.dob}</p>
+                                        <h3 className="text-sm font-medium text-gray-500 mb-1">Join Date</h3>
+                                        <p className="font-semibold">{employee?.join_date}</p>
                                     </div>
                                     <div>
                                         <h3 className="text-sm font-medium text-gray-500 mb-1">Phone Number</h3>
-                                        <p className="font-semibold">{employee.phone}</p>
+                                        <p className="font-semibold">{employee?.number}</p>
                                     </div>
                                     <div>
                                         <h3 className="text-sm font-medium text-gray-500 mb-1">Email</h3>
-                                        <p className="font-semibold">{employee.email}</p>
+                                        <p className="font-semibold">{employee?.email}</p>
                                     </div>
                                 </div>
 
@@ -175,21 +174,21 @@ const EmployeeProfile = ({ message }) => {
                                 <div className=" space-y-3 ">
                                     <div>
                                         <h3 className="text-sm font-medium text-gray-500 mb-1">Gender</h3>
-                                        <p className="font-semibold">{employee.gender}</p>
+                                        <p className="font-semibold">{employee?.gender}</p>
                                     </div>
                                     <div>
                                         <h3 className="text-sm font-medium text-gray-500 mb-1">Base Salary</h3>
-                                        <p className="font-semibold"><span>&#8377;</span> {employee.Salary}</p>
+                                        <p className="font-semibold"><span>&#8377;</span> {employee?.Salary}</p>
                                     </div>
                                     <div>
                                         <h3 className="text-sm font-medium text-gray-500 mb-1">Qualification</h3>
-                                        <p className="font-semibold">{employee.qualification}</p>
+                                        <p className="font-semibold">{employee?.qualification}</p>
                                     </div>
 
                                 </div>
                                 <div>
                                     <h3 className="text-sm font-medium text-gray-500 mb-1">Address</h3>
-                                    <p className="font-semibold">{employee.address}</p>
+                                    <p className="font-semibold">{employee?.address}</p>
                                 </div>
                             </div>
                         </div>

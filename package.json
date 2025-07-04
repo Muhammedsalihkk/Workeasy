@@ -1,0 +1,9 @@
+{
+  "dependencies": {
+    "nodemailer": "^7.0.4",
+    "twilio": "^5.7.1"
+  },
+  "devDependencies": {
+    "@types/node": "^24.0.10"
+  }
+}
