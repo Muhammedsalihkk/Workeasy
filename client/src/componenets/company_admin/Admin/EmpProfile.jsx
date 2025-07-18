@@ -47,7 +47,7 @@ const EmployeeProfile = ({ message }) => {
             className={`fixed inset-0 backdrop-blur-[2px] flex items-center justify-center z-50 transition-all duration-500 ease-in-out ${viewEmployee ? 'opacity-100 scale-100 translate-y-0' : 'opacity-0 scale-95 -translate-y-10 pointer-events-none'
                 }`}
         >
-            <div className="max-w-4xl  mx-auto bg-white rounded-xl h-170  overflow-hidden shadow-md ">
+            <div className="max-w-4xl  mx-auto bg-white rounded-xl h-170  overflow-hidden shadow-md w-400 ">
                 {/* Header */}
                 <div className="p-6 bg-gradient-to-r from-indigo-500 to-purple-600 text-white  ">
                     <div className='flex justify-end'>

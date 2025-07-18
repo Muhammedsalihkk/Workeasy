@@ -2,9 +2,7 @@ import amqp from 'amqplib'
 import { configdata } from './congration'
 
 export const send_message = async (data: any) => {
-    try {
-        console.log("send message",data);
-        
+    try {   
         const connection = await amqp.connect(configdata.rabitmq_address)
         const channel = await connection.createChannel()
         const queue = "authservice"

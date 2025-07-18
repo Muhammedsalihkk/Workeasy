@@ -12,7 +12,7 @@ function Header({ message }) {
   console.log("user is",user);
   
   return (
-    <header className="flex flex-col md:flex-row justify-between items-start md:items-center p-6 bg-white shadow-md">
+    <header className="flex flex-col md:flex-row justify-between items-start md:items-center p-6 bg-white shadow-md rounded-2xl mx-1">
       <div className="mb-4 md:mb-0 font-bold text-2xl ">
         {header}
       </div>

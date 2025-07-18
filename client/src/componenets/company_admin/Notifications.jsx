@@ -45,7 +45,7 @@ const NotificationsView = () => {
   };
 
   return (
-  notifications.length==0? <div className="flex flex-col items-center w-full justify-center py-10 bg-white rounded-lg shadow-md border border-gray-200">
+  notifications.length!=0? <div className="flex flex-col items-center w-full justify-center py-10 bg-white rounded-lg shadow-md border border-gray-200">
     <BellIcon className="w-7 h-7 text-gray-700" />
     <p className="text-gray-500 text-lg font-medium">No notifications</p>
     <p className="text-gray-400 text-sm mt-1">You're all caught up!</p>
@@ -70,7 +70,7 @@ const NotificationsView = () => {
 
       {/* Notifications List */}
       <div className="divide-y overflow-scroll m-10 h-105">
-        {filteredNotifications.length > 0 ? (
+        {filteredNotifications.length == 0 ? (
           filteredNotifications.map((notification) => (
             <div 
               key={notification.id} 

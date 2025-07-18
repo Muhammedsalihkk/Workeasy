@@ -15,6 +15,8 @@ import AdminProfile from './Admin_Profile';
 import AnalyticsDashboard from './Admin/Analysis';
 import AdminDashboard from './Admin/Dashboard';
 import EmployeeDashboard from './Employee/DashbordEmp';
+import SalaryDetailsUI from './Employee/Salary';
+import AttendanceTracker from './Employee/Attendence';
 
 
 function Comapany_ui() {
@@ -59,12 +61,14 @@ function Comapany_ui() {
       <div className='flex'>
         <Sidebar message={{ activeItem, setActiveItem,role }} />
         {activeItem == "Dashboard" && role=="admin"&&<AdminDashboard message={{ activeItem, setActiveItem,user }} />}
-        {activeItem=="Dashboard"&&role=="employee"&&<EmployeeDashboard/>}
+        {activeItem=="Dashboard"&&role=="employee"&&<EmployeeDashboard message={{user}}/>}
         {activeItem == "CompanyProfile" && <CompanyProfile  />}
         {activeItem == "Employees" && <EmployeeDetails />}
         {activeItem == "Admin profile" && <AdminProfile message={{setlogout,role}} />}
         {activeItem == "Analytics" && <AnalyticsDashboard message={{user}}/>}
         {activeItem == "Notification" && <NotificationsView/>}
+        {activeItem=="Attendance"&&<AttendanceTracker/>}
+        {activeItem=="Salary"&&<SalaryDetailsUI message={{user}}/>}
 
 
       </div>

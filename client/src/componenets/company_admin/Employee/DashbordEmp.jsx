@@ -7,8 +7,10 @@ import {
 import {
     BriefcaseIcon, ClockIcon, PlusCircleIcon, CalendarIcon, CurrencyDollarIcon
 } from '@heroicons/react/24/outline';
+import Header from '../Header';
+import { LayoutDashboardIcon } from 'lucide-react';
 
-const EmployeeDashboard = () => {
+const EmployeeDashboard = ({message}) => {
 
     // Employee data
     const [employee] = useState({
@@ -17,13 +19,14 @@ const EmployeeDashboard = () => {
         department: "Production - Camera Department",
         avatar: "MJ",
     });
+    const {user} = message
 
     // KPI data
     const kpis = [
 
-        { title: 'Hours this Month', value: 162, icon: ClockIcon, color: 'bg-green-500' },
-        { title: 'Overtime Hours', value: 12, icon: PlusCircleIcon, color: 'bg-yellow-500' },
-        { title: 'Leaves Taken', value: 2, icon: CalendarIcon, color: 'bg-red-500' },
+        { title: 'Totel Working days', value: 20, icon: ClockIcon, color: 'bg-green-500' },
+        { title: ' Late Days', value: 5, icon: PlusCircleIcon, color: 'bg-yellow-500' },
+        { title: 'Leaves Taken', value: 10, icon: CalendarIcon, color: 'bg-red-500' },
     ];
 
     // Attendance summary data (Doughnut)
@@ -67,30 +70,17 @@ const EmployeeDashboard = () => {
     };
 
     const unreadCount = notifications.filter(n => !n.read).length;
+    const header=<div className='flex gap-2.5'>
+   <LayoutDashboardIcon className="w-7 h-7 text-gray-700" />
+          <h2 className="text-xl font-bold text-gray-800">DashBoard</h2></div>
 
     return (
-        <div className="h-10 bg-gray-50">
+        <div className="   space-y-4  bg-gray-50">
 
             {/* Header */}
-            <header className="bg-gradient-to-r from-indigo-800 to-purple-800 text-white shadow-lg">
-                <div className="max-w-7xl mx-auto px-4 py-4 flex justify-between items-center">
-                    <div>
-                        <h1 className="text-2xl font-bold">StudioPro Employee Dashboard</h1>
-                        <p className="text-indigo-200">Production Management System</p>
-                    </div>
-                    <div className="flex items-center space-x-4">
-                        <div className="h-12 w-12 rounded-full bg-indigo-600 flex items-center justify-center text-white font-bold text-lg">
-                            {employee.avatar}
-                        </div>
-                        <div>
-                            <p className="font-medium">{employee.name}</p>
-                            <p className="text-sm text-indigo-300">{employee.role}</p>
-                        </div>
-                    </div>
-                </div>
-            </header>
+           <Header message={{header,user}}/>
 
-            <main className="max-w-7xl mx-auto px-4 py-8">
+            <main className="max-w-7xl mx-auto px-4 ">
 
                 {/* KPI Cards */}
                 <div className="grid grid-cols-2 md:grid-cols-3 gap-4 mb-8">
@@ -109,10 +99,7 @@ const EmployeeDashboard = () => {
 
                 <div className="grid grid-cols-1 h-1  lg:grid-cols-3 gap-8">
 
-                    {/* Left Column - BIG Attendance Chart */}
                     <div className="lg:col-span-2 space-y-8">
-
-                        {/* Attendance Summary - Big Doughnut Chart */}
                         <div className="bg-white rounded-xl shadow-md p-6">
                             <h2 className="text-xl font-bold mb-4">Attendance Summary</h2>
                             <div className="h-96">
@@ -141,11 +128,10 @@ const EmployeeDashboard = () => {
 
                     </div>
 
-                    {/* Right Column - Notifications & Salary cards */}
                     <div className="space-y-5 ">
 
-                        {/* Notifications */}
-                        <div className="bg-white rounded-xl h-68 shadow-md overflow-scroll ">
+                       
+                        <div className="bg-white rounded-xl  shadow-md  ">
                             <div className="bg-gradient-to-r from-gray-50 to-gray-100 overflow-scroll px-6 py-4 border-b flex justify-between items-center">
                                 <h2 className="text-md font-bold text-gray-800">Notifications</h2>
                                 {unreadCount > 0 && (
@@ -154,7 +140,7 @@ const EmployeeDashboard = () => {
                                     </button>
                                 )}
                             </div>
-                            <div className="p-2 max-h-[300px] overflow-y-auto">
+                            <div className="p-2 max-h-[202px] overflow-y-auto">
                                 {notifications.map(notification => (
                                     <div key={notification.id}
                                         className={`p-4 border-b cursor-pointer transition-colors ${!notification.read ? 'bg-blue-50 border-l-4 border-blue-500' : 'hover:bg-gray-50'
@@ -169,7 +155,6 @@ const EmployeeDashboard = () => {
                             </div>
                         </div>
 
-                        {/* Salary - Small Card (not chart) */}
 
                         <div className="bg-white rounded-xl shadow-md p-4">
                             <h2 className="text-md font-bold text-gray-800 mb-2">Last 3 Months Salary</h2>

@@ -29,7 +29,7 @@ const Sidebar = ({ message }) => {
     { name: 'Notification', icon: BellIcon },
     role=="admin"&&{ name: 'CompanyProfile', icon: BuildingOffice2Icon },
     { name: 'Stocks', icon: ArrowTrendingUpIcon },
-    role=="admin"?{ name: "Admin profile", icon: User2Icon }:{ name: "User profile", icon: User2Icon }
+    { name: "Admin profile", icon: User2Icon }
   ].filter(Boolean)
 
   return (

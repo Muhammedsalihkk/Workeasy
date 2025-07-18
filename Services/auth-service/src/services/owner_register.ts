@@ -22,6 +22,8 @@ export const owner_registration = async (userdata: owner): Promise<any> => {
         return user
     }
     catch (error: any) {
-        return `error messag${error.message}`
+        console.log("thi is error message",error.message);
+        
+        throw `error messag${error.message}`
     }
 }

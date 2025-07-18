@@ -13,7 +13,6 @@ export const employee_authentication = async (req: Request, res: Response, next:
         }
         else {
             const response:any = await employee_authentication_service(req.body)
-             console.log("response",response);
                 res.cookie('token',response,{
                     httpOnly:true,
                     secure:false,
