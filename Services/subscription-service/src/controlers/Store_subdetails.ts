@@ -15,6 +15,8 @@ export const sub_data_posting = async (req: Request, res: Response, next: NextFu
         const data:any=await add_subdetials_service(req.body)
         if(data)
         {
+            console.log(data);
+            
             const result:string=await send_message({id:req.body.company_id,plan_type:req.body.plan_type,plan_end:req.body.plan_end})
             
             if(result=="success")

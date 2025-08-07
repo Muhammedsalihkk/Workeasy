@@ -7,5 +7,5 @@ export const configration_data:any={
         server_port:process.env.SERVER_PORT,
         razorpay_id:process.env.RAZOR_ID,
         razorpay_key:process.env.RAZOR_SECRET_KEY,
-        rabitmq_server:process.env.RABITMQ_PORT
+        rabitmq_server:process.env.RABBITMQ_PORT
 }

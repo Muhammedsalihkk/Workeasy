@@ -1,0 +1,12 @@
+FROM node:20-alpine
+
+WORKDIR /src
+
+COPY package*.json ./
+
+
+RUN npm install && npm cache clean --force
+
+COPY . .
+EXPOSE 3001
+CMD ["npx", "ts-node", "src/app.ts"]

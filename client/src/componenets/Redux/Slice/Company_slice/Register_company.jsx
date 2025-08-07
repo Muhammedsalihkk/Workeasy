@@ -3,10 +3,16 @@ import axios from 'axios'
 
 export const register_company=createAsyncThunk('company/register_company',async (company_data,thunkAPI)=>{
     try{  
-        const response= await axios.post('http://localhost/api/companies',company_data)
+        const response= await axios.post('http://localhost/api/companies',company_data,{
+            withCredentials:true
+        })
+        console.log(response.data);
+        
         return response.data
     }
     catch(error){
+        console.log(error);
+        
         return thunkAPI.rejectWithValue(error.response.data||"rejistration fiald")
     }
 })

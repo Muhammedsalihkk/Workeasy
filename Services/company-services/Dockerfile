@@ -1,9 +1,20 @@
+# Use an official Node.js runtime as a parent image
 FROM node:20-alpine
 
+# Set working directory in the container
 WORKDIR /app
+
+# Copy package.json and package-lock.json first to leverage Docker cache
 COPY package*.json ./
-RUN npm install&&npm cache clean --force
-COPY ./src ./src
-ENV NODE_ENV=development
+
+# Install dependencies
+RUN npm install
+
+# Copy the rest of the application
+COPY . .
+
+# Expose the port the app runs on
 EXPOSE 3000
-CMD ["npx","nodemon","--watch","src","src/app.ts"]
+
+# Run the app
+CMD ["npx", "ts-node", "src/app.ts"]

@@ -8,16 +8,17 @@ import { recivemessage } from "./config/Rabitmq.connection";
 import cors from 'cors'
 
 const app=express()
-connectdb()
-recivemessage()
 app.use(cors({
   origin:"http://localhost:5173",
   credentials:true
 }))
 app.use(express.json())
 app.use(cookieParser())
+
+connectdb()
+recivemessage()
 app.use('/api',companeyrouter)
-  app.listen(configdata.Port,()=>{
+app.listen(configdata.Port,()=>{
     console.log(`companyserver is running `);
   })
 app.use(errorhandling)

@@ -15,7 +15,6 @@ services:
 
   auth-service:
     build:
-  
       context: ./services/auth-service
     labels:
       - "traefik.enable=true"
@@ -29,6 +28,8 @@ services:
     command: npx ts-node src/app.ts
     env_file:
       - ./services/auth-service/.env
+    depends_on:
+      - rabbit-mq
 
 
   company-service:
@@ -47,6 +48,8 @@ services:
 
     env_file:
       - ./services/company-services/.env
+    depends_on:
+      - rabbit-mq
       
   subscription-service:
     build: 
@@ -63,6 +66,8 @@ services:
     command: npx ts-node src/app.ts
     env_file:
       - ./services/subscription-service/.env
+    depends_on:
+      - rabbit-mq
 
   attendence-server:
     build: 
@@ -77,9 +82,11 @@ services:
       - workeasy_default
     volumes:
       - ./services/attendence:/app
-    command: bash -c "source src/embedded/facenv/Scripts/activate && npx ts-node src/app.ts"
+    command: sh -c "npx ts-node src/app.ts"
     env_file:
       - ./services/attendence/.env
+    depends_on:
+      - rabbit-mq
 
   traefik:
     image: traefik:v3.0
