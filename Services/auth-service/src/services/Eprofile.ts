@@ -1,11 +1,10 @@
 import { activities_model } from "../models/Activities";
-import { employeemodel } from "../models/employee_model";
-import { ownermodel } from "../models/owner_model";
+import { UserModel } from "../models/userModel";
 import { add_activity } from "./Addtoactivity";
 
 export const getemployee_profile_service=async(id:string)=>{
   try{    
-    const data=await employeemodel.findById(id)
+    const data=await UserModel.findById(id)
     return data
   }
   catch(error){
@@ -18,7 +17,7 @@ export const edit_employee_profile=async(profile_data:any,id:string)=>{
       try{    
         console.log("id is ",profile_data);
         
-         const updated_one= await employeemodel.findByIdAndUpdate(id,
+         const updated_one= await UserModel.findByIdAndUpdate(id,
           {...profile_data},
           {new:true,runValidators:true})
          
@@ -34,7 +33,7 @@ export const edit_employee_profile=async(profile_data:any,id:string)=>{
 export const delete_employee=async(id:string)=>{
 
         try{
-            const respons= await employeemodel.findByIdAndDelete(id)
+            const respons= await UserModel.findByIdAndDelete(id)
             return respons
         }
         catch(error)

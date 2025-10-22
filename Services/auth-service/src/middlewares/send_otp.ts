@@ -1,8 +1,9 @@
 import nodemailer from 'nodemailer'
 import { configdata } from '../config/congration'
 import { otp_model } from '../models/otpstor';
-import { ownermodel } from '../models/owner_model';
+
 import { hasspassword } from '../utils/hasing';
+import { UserModel } from '../models/userModel';
 
 
 export const generateotp=()=>{
@@ -56,7 +57,7 @@ export const changepassword_service=async (id:string,password:string)=>{
       try{  const result= await hasspassword(password)
         console.log("hashed",result);
         
-        const response =await ownermodel.findByIdAndUpdate(id,{password:result})
+        const response =await UserModel.findByIdAndUpdate(id,{password:result})
         return true}
     catch(error:any){
         return error.message

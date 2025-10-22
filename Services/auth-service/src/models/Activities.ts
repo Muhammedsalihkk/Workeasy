@@ -1,5 +1,5 @@
 import { Schema, model } from "mongoose";
-import { owner } from "../interfaces/interface";
+
 
 const activities = new Schema({
   userId: { type: String, required: true },

@@ -1,14 +1,15 @@
 
+import { User } from "../interfaces/interface";
+import { UserModel } from "../models/userModel";
 import { hasspassword } from "../utils/hasing";
-import { employee } from "../interfaces/interface";
-import { employeemodel } from "../models/employee_model";
+
 import { add_activity } from "./Addtoactivity";
 
-export const employee_register = async (userdata: employee, company_id: string) => {
+export const employee_register = async (userdata: User, company_id: string) => {
 
     try {
         const hashedpassword: string = await hasspassword(userdata.password)
-        const result: any = await employeemodel.create({
+        const result: any = await UserModel.create({
             company_id: company_id,
             employee_id:userdata.employee_id,
             name: userdata.name,

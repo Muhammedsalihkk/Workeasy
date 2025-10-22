@@ -18,7 +18,7 @@ const adminverify = (req: Request, res: Response, next: NextFunction) => {
                  res.status(403).json({ message: "access restricted" })
             }
             else {
-                res.locals.user_id = decode.owner_id
+                res.locals.user_id = decode.userId
                 res.locals.company_id = decode.company_id
                 next()
             }

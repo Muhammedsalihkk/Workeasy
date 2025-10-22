@@ -17,7 +17,7 @@ export const is_supaeradmin=(req:Request,res:Response,next:NextFunction)=>{
             res.status(401).json({messgae:"access denied to this url"})
         }
         else{
-            res.locals.user_id=response.owner_id
+            res.locals.user_id=response.userId
             res.locals.role=response.role,
             next()
         }

@@ -68,7 +68,6 @@ services:
       - ./services/subscription-service/.env
     depends_on:
       - rabbit-mq
-
   attendence-server:
     build: 
       context: ./services/attendence
@@ -87,6 +86,22 @@ services:
       - ./services/attendence/.env
     depends_on:
       - rabbit-mq
+  stock-service:
+    build: 
+      context: ./services/Stockes-service
+    container_name: stock-service
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.stock.rule=PathPrefix(`/api/stock`)"
+      - "traefik.http.services.stock.loadbalancer.server.port=3004"
+    networks:
+      - workeasy_default
+    volumes:
+      - ./services/subscription-service:/app
+    command: npx ts-node src/app.ts
+    env_file:
+      - ./services/Stockes-service/.env
+    
 
   traefik:
     image: traefik:v3.0

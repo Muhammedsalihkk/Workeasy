@@ -11,7 +11,7 @@ export const authentication_verify = (req: Request, res: Response, next: NextFun
         else {
             const response: any = jwt_verify(token)
             if (response) {
-                res.locals.user_id = response.owner_id || response.employee_id
+                res.locals.user_id = response.userId || response.userId
                 res.locals.role = response.role
                 res.locals.company_id = response.company_id
                 response.company_postion ? res.locals.postion = response.company_postion : null

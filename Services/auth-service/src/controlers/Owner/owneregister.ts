@@ -33,7 +33,9 @@ export const owneregister = async (req: Request, res: Response, next: NextFuncti
             throw err
         }
     }
-    catch (error) {
+    catch (error:any) {
+        console.log(error.message);
+        
         next(error)
     }
 }

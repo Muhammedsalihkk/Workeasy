@@ -10,6 +10,8 @@ function Registration() {
   const [company_id, setcomapany_id] = useState(null)
   const navigator = useNavigate('')
   const [formdata, setFormData] = useState('')
+  console.log(currentStep);
+  
   return (
   <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4">
   <div className="w-full max-w-2xl bg-white rounded-lg shadow-md overflow-hidden">

@@ -12,7 +12,7 @@ const authverify = (req: Request, res: Response, next: NextFunction) => {
         const decode:any = jwt.verify(token, secret_data.jwt_token)
         
         if (decode) {
-            res.locals.user_id = decode.employee_id
+            res.locals.user_id = decode.
             res.locals.company_id = decode.company_id
             next()
         }

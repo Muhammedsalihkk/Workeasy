@@ -32,7 +32,7 @@ export const issuper_admin=(req:Request,res:Response,next:NextFunction)=>{
         res.status(403).json({message:"access denied to this url"})
     }
     else{
-        res.locals.user_id=encoded.owner_id
+        res.locals.user_id=encoded.userId
         res.locals.role=encoded.role,
         next()
     }

@@ -1,4 +1,5 @@
-import { employeemodel } from "../models/employee_model"
+import { UserModel } from "../models/userModel"
+
 
 export const getall_employee_service = async (limit: number,
     skip: number,
@@ -21,7 +22,7 @@ export const getall_employee_service = async (limit: number,
             ];
         }
 
-        const employees = await employeemodel.find(query, {
+        const employees = await UserModel.find(query, {
             img: 1,
             name: 1,
             company_role: 1,

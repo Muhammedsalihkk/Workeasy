@@ -3,6 +3,8 @@ import axios from "axios";
 
 export const add_owner = createAsyncThunk("owner/add", async (data, thunkAPI) => {
     try {   
+        console.log("datais",data);
+        
         const response = await axios.post('http://localhost/auth/owner/register',data)
         return response.data
     }

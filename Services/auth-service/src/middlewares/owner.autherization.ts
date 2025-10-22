@@ -24,7 +24,7 @@ export const owner_authrization=(req:Request,res:Response,next:NextFunction)=>{
           console.log(decoded);
           
             res.locals.company_id=decoded.company_id
-            res.locals.user_id=decoded.owner_id
+            res.locals.user_id=decoded.userId
             
             next()
         }

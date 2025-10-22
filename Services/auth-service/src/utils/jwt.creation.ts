@@ -2,6 +2,8 @@ import  jwt  from "jsonwebtoken"
 import { configdata } from "../config/congration"
 
 export const jwt_creation=(payload:object)=>{
+        console.log(configdata.JSON_secret);
+        
         const token=jwt.sign(payload,configdata.JSON_secret,{expiresIn:'1d'})
         return token
 
