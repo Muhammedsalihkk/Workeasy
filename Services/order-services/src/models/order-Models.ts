@@ -1,7 +1,6 @@
 import { model, Schema } from "mongoose";
 import { IOrder } from "../types/ordertypes";
-
-const orderSchema = new Schema<IOrder>(
+const orderSchema = new Schema(
   {
     customerName: { type: String, required: true },
     product: { type: String, required: true },
@@ -11,21 +10,35 @@ const orderSchema = new Schema<IOrder>(
       enum: ["pending", "completed", "cancelled"],
       default: "pending",
     },
-    company_id: { type: String, required: true },
-    createdBy: { type: String },
-    updatedBy: { type: String },
 
-    // ✅ New fields
-    deliveryDate: { type: Date, required: true }, // delivery date is required
+    // Reference to Company collection
+    company_id: {
+      type: Schema.Types.ObjectId,
+      ref: "Companies",
+      required: true,
+    },
+
+    // Reference to User collection
+    createdBy: {
+      type: Schema.Types.ObjectId,
+      ref: "user",
+      required: true,
+    },
+    updatedBy: {
+      type: Schema.Types.ObjectId,
+      ref: "user",
+    },
+
+    deliveryDate: { type: Date, required: true },
     paymentStatus: {
       type: String,
-      enum: ["pending", "paid", "failed"], // only these values allowed
+      enum: ["pending", "paid", "failed"],
       default: "pending",
     },
-    isDelete:{type:Boolean,default:false}
+    isDelete: { type: Boolean, default: false },
   },
   {
-    timestamps: true, 
+    timestamps: true,
   }
 );
 

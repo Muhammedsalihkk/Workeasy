@@ -1,18 +1,23 @@
-FROM node:20-alpine
+FROM node:20-alpine AS builder
 
-WORKDIR /src
+WORKDIR /app
 
 COPY package*.json ./
+
 RUN npm install && npm cache clean --force
 
-# Copy the rest of the code
 COPY . .
 
-# Convert Windows line endings to Unix
+RUN npm run build
 
+FROM node:20-alpine AS runner
 
-# Expose port
-EXPOSE 3003
+WORKDIR /app
 
-# Final command to run the app
-CMD ["npx", "ts-node", "src/app.ts"]
+COPY package*json ./
+
+RUN npm  install -omit=dev
+
+COPY --from=builder app/dist ./dist
+
+CMD [ "npm","start" ]

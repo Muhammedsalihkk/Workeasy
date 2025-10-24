@@ -2,14 +2,6 @@ import {Schema,model} from "mongoose";
 import { company } from "../interface/company.interface";
 import { required, string } from "joi";
 
-
-function getdate():Date{
-
-    const today=new Date()
-    return new Date(today.getFullYear(),today.getMonth(),today.getDate())
-}
-
-
 const companyschema=new Schema({
     legalname:{type:String,required:true,index:true},
     date:{type:String,required:true},
@@ -34,4 +26,4 @@ const companyschema=new Schema({
         state:{type:String},     
     }
 })
-export const company_model=model<company>("companydbs",companyschema)
+export const company_model=model<company>("Companies",companyschema)

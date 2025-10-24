@@ -1,0 +1,112 @@
+
+services:
+
+  client:
+    build: ./client
+    image: client-image
+    container_name: client-container
+    ports:
+      - "5173:5173"
+
+  auth-service:
+    build:
+      context: ./services/auth-service
+      dockerfile: Dockerfile.dev
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.auth.rule=PathPrefix(`/auth`)"
+      - "traefik.http.services.auth.loadbalancer.server.port=3001"
+    networks:
+      - workeasy_default
+    container_name: auth-service
+    volumes:
+      - ./services/auth-service:/app
+    command: npx ts-node src/app.ts
+    env_file:
+      - ./services/auth-service/.env
+    depends_on:
+      - rabbit-mq
+
+
+  company-service:
+    build:
+      context: ./services/company-services
+    container_name: company-service
+    labels:
+    - "traefik.enable=true"
+    - "traefik.http.routers.company.rule=PathPrefix(`/api/companies`)"
+    - "traefik.http.services.company.loadbalancer.server.port=3000"
+    networks:
+      - workeasy_default
+    volumes:
+      - ./services/company-services:/app
+    command: npx ts-node src/app.ts
+
+    env_file:
+      - ./services/company-services/.env
+    depends_on:
+      - rabbit-mq
+      
+  subscription-service:
+    build: 
+      context: ./services/subscription-service
+    container_name: subscription-service
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.subscription.rule=PathPrefix(`/api/subscription`)"
+      - "traefik.http.services.subscription.loadbalancer.server.port=3002"
+    networks:
+      - workeasy_default
+    volumes:
+      - ./services/subscription-service:/app
+    command: npx ts-node src/app.ts
+    env_file:
+      - ./services/subscription-service/.env
+    depends_on:
+      - rabbit-mq
+  order-service:
+    build:
+      context: ./services/order-services
+      dockerfile: dockerfile
+    container_name: order-service
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.orders.rule=PathPrefix(`/api/orders`)"
+      - "traefik.http.services.orders.loadbalancer.server.port=3005"
+    networks:
+      - workeasy_default
+    volumes:
+      - ./services/order-services:/app
+    env_file:
+      - ./services/order-services/.env
+
+  attendence-server:
+    build: 
+      context: ./services/attendence
+    container_name: attendence-services
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.attendence.rule=PathPrefix(`/api/attendence`)"
+      - "traefik.http.routers.attendence.service=attendence"
+      - "traefik.http.services.attendence.loadbalancer.server.port=3003"
+    networks:
+      - workeasy_default
+    volumes:
+      - ./services/attendence:/app
+    command: sh -c "npx ts-node src/app.ts"
+    env_file:
+      - ./services/attendence/.env
+
+  stock-service:
+    build: 
+      context: ./services/Stockes-service
+    container_name: stock-service
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.stock.rule=PathPrefix(`/api/stock`)"
+      - "traefik.http.services.stock.loadbalancer.server.port=3004"
+    volumes:
+      - ./services/subscription-service:/app
+    command: npx ts-node src/app.ts
+    env_file:
+      - ./services/Stockes-service/.env

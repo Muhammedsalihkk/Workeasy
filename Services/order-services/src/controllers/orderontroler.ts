@@ -4,6 +4,7 @@ import {
   bulkOrderadd,
   fetchAllOrders,
   fetchOrderById,
+  massUpdateTransactions,
   modifyOrder,
   removeOrder,
 } from "../services/services";
@@ -15,9 +16,12 @@ export const getAllOrders = async (
   next: NextFunction
 ): Promise<void> => {
   try {
-    const orders = await fetchAllOrders("COMP001");
+  
+    
+    const orders = await fetchAllOrders(req.user.company_id,req.query);
     res.status(200).json(orders);
-  } catch (err) {
+  } catch (err:any) {
+    console.log(err.message)
     next({ status: 500, message: "Failed to fetch orders", error: err });
   }
 };
@@ -42,9 +46,14 @@ export const createOrder = async (
   next: NextFunction
 ): Promise<void> => {
   try {
+    
+    req.body.company_id=req.user.company_id
+    req.body.createdBy=req.user.userId
     const newOrder = await addOrder(req.body);
     res.status(201).json(newOrder);
   } catch (err: any) {
+    console.log(err.message);
+    
     next({ status: 500, message: "Failed to Create order", error: err });
   }
 };
@@ -61,6 +70,21 @@ export const bulkorderInsertion =async (
     res.status(200).json("insertion completed")
   } catch (err: any) {
     next({ status: 500, message: err.message, error: err });
+  }
+};
+
+export const massEditTransactions = async (req:AuthRequest, res:Response,next:NextFunction) => {
+  try {
+    const { ids, updates } = req.body;
+    
+    const result = await massUpdateTransactions(ids, updates);
+
+    res.status(200).json({
+      message: `Updated ${result.modifiedCount} transactions successfully`,
+    });
+  } catch (error:any) {
+   
+    next({ status: 500, message: error.message, error: error })
   }
 };
 export const updateOrder = async (

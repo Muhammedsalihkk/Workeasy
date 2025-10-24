@@ -1,9 +1,23 @@
-FROM node:20-alpine
-WORKDIR /app
-COPY package*.json ./
-RUN npm install
-COPY . .
-EXPOSE 3000
+FROM node:20-alpine AS builder
 
-# Run the app
-CMD ["npx", "ts-node", "src/app.ts"]
+WORKDIR /app
+
+COPY package*.json ./
+
+RUN npm install
+
+COPY . .
+
+RUN npm run build
+
+FROM node:20-alpine
+
+WORKDIR /app
+
+COPY package*.json ./
+
+RUN npm install --omit=dev
+
+COPY --from=builder /app/dist /app/dist
+
+CMD [ "npm","start" ]

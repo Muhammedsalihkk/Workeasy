@@ -1,12 +1,23 @@
-FROM node:20-alpine
+FROM node:20-alpine AS Builder
 
-WORKDIR /src
+WORKDIR /app
 
 COPY package*.json ./
-
 
 RUN npm install && npm cache clean --force
 
 COPY . .
-EXPOSE 3001
-CMD ["npx", "ts-node", "src/app.ts"]
+
+RUN npm run build
+
+FROM node:20-alpine AS runner
+
+WORKDIR /app
+
+COPY  package*.json ./
+
+RUN npm install --omit=dev
+
+COPY  --from=Builder app/dist /app/dist
+
+CMD [ "npm","start" ]

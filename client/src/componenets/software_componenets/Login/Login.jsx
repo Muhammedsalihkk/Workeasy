@@ -1,61 +1,55 @@
-import React, { useEffect, useState } from 'react'
-import Company_step from '../Registration/Company_step';
-import Admin_step from '../Registration/Admin_step';
+import React, { useState } from 'react';
 import { useFormik } from 'formik';
-import * as yup from 'yup'
-import Subscription_step from '../Registration/Subscription_step';
+import * as yup from 'yup';
 import { useNavigate } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
-import { login } from '../../Redux/Slice/Owner_slices/Login';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { login } from '../../Redux/Slice/userSlice/Login';
+import { useEffect } from 'react';
 
 function Login() {
-  const dispatch = useDispatch()
-  const { login_response, loading, error } = useSelector((state) => state.login)
-    const navigate = useNavigate('')
-  const [err,setError]=useState("")
+  const dispatch = useDispatch();
+  const { login_response, loading, error } = useSelector((state) => state.login);
+  const navigate = useNavigate('');
+  const [err, setError] = useState('');
+
   const formik = useFormik({
     initialValues: {
-      email: "",
-      password: "",
-      role: ""
+      email: '',
+      password: '',
     },
     validationSchema: yup.object({
-      email: yup.string().email('enter valid email').required("email requird"),
-      password: yup.string().required("password required"),
-      role: yup.string().required("Please select your role")
+      email: yup.string().email('Enter a valid email').required('Email required'),
+      password: yup.string().required('Password required'),
     }),
     validateOnMount: true,
-    onSubmit:async (value) => {
-          try{
-            setError("")
-            const response= await dispatch(login(value)).unwrap()
-                if(response.message=="success"){
-           toast.success("login success", {
-                    position: "top-right",
-                    autoClose: 3500,
-                    hideProgressBar: false,
-                    closeOnClick: true,
-                    pauseOnHover: true,
-                    draggable: true,
-                    progress: undefined,
-                  });
-          navigate('/comapny_admin',{state:{role:formik.values.role}})
-    }
+    onSubmit: async (value) => {
+      try {
+        setError('');
+        const response = await dispatch(login(value)).unwrap();
+        if (response.message === 'success') {
+          toast.success('Login success', {
+            position: 'top-right',
+            autoClose: 3500,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+          });
+          navigate('/dashboard');
+        }
+      } catch (error) {
+        console.log('error');
+        setError(error.error);
+      }
+    },
+  });
 
-          }
-          catch(error){
-          console.log("erroe");
-              setError(error.error)
-          }
-    }
-  })
   return (
-       <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center p-4">
-         
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center p-4">
       <div className="grid grid-cols-1 md:grid-cols-2 bg-white rounded-2xl shadow-xl overflow-hidden w-full max-w-3xl">
-       
         {/* Left Side - Form */}
         <div className="p-8 flex items-center justify-center">
           <div className="w-full max-w-xs">
@@ -116,49 +110,6 @@ function Login() {
                 )}
               </div>
 
-              {/* Role Selection */}
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">Login As</label>
-                <div className="grid grid-cols-2 gap-2">
-                  {/* Employee */}
-                  <div
-                    className={`border rounded-lg p-2 cursor-pointer text-center text-xs ${
-                      formik.values.role === 'employee'
-                        ? 'border-blue-500 bg-blue-50'
-                        : 'border-gray-300 hover:border-blue-300'
-                    }`}
-                    onClick={() => formik.setFieldValue('role', 'employee')}
-                  >
-                    <img
-                      src="https://thumbs.dreamstime.com/b/modern-geometric-logo-features-construction-theme-flat-style-includes-worker-hammer-cityscape-using-primary-color-380028409.jpg"
-                      alt="employee"
-                      className="w-10 h-10 mx-auto rounded"
-                    />
-                    <span>Employee</span>
-                  </div>
-
-                  {/* Admin */}
-                  <div
-                    className={`border rounded-lg p-2 cursor-pointer text-center text-xs ${
-                      formik.values.role === 'admin'
-                        ? 'border-blue-500 bg-blue-50'
-                        : 'border-gray-300 hover:border-blue-300'
-                    }`}
-                    onClick={() => formik.setFieldValue('role', 'admin')}
-                  >
-                    <img
-                      src="https://media.istockphoto.com/id/628884910/vector/real-estate-developer-entrepreneur-concept.jpg?s=612x612&w=0&k=20&c=Cp83P0XqWrg9lgc-eO6JGdWJZEqTksWwgNqIHQErTCc="
-                      alt="admin"
-                      className="w-10 h-10 mx-auto rounded"
-                    />
-                    <span>Admin</span>
-                  </div>
-                </div>
-                {formik.touched.role && formik.errors.role && (
-                  <p className="text-red-500 text-xs">{formik.errors.role}</p>
-                )}
-              </div>
-
               {/* Error */}
               <div className="flex justify-center">
                 {err && <p className="text-red-600 text-xs">{err}</p>}
@@ -180,7 +131,10 @@ function Login() {
               </div>
             </form>
 
-            <div className="text-center mt-6 text-xs text-gray-600" onClick={() => navigate('/registration')}>
+            <div
+              className="text-center mt-6 text-xs text-gray-600"
+              onClick={() => navigate('/registration')}
+            >
               Don't have an account?
               <span className="font-medium text-blue-600 hover:text-blue-500 cursor-pointer">
                 {' '}Get started
@@ -199,7 +153,7 @@ function Login() {
         </div>
       </div>
     </div>
-  )
+  );
 }
 
-export default Login
+export default Login;

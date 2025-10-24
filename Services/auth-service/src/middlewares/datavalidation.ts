@@ -31,7 +31,6 @@ export const validation = Joi.object({
 
 
 export const authData_validation=Joi.object({
-    role:Joi.string().required(),
     email:Joi.string().required().email(),
     password:Joi.string().required()
 }).options({convert:false})

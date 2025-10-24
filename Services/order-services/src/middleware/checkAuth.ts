@@ -19,12 +19,12 @@ export const checkAuth = (
         .json({ message: "Unauthorized: No token provided" });
     }
     const secretKey = (confiqdata.JWT_Secret||'').trim() 
-     console.log(token);
+ 
   
     const decoded = jwt.verify(token, secretKey);
    
   
-    console.log(decoded);
+  
     
     req.user = decoded; // attach decoded payload to request
     next();

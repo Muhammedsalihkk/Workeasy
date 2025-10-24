@@ -3,7 +3,7 @@ import * as yup from "yup";
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { add_owner } from "../../Redux/Slice/Owner_slices/Register";
+import { add_user } from "../../Redux/Slice/userSlice/Register";
 
 function Admin_step({ step_setting }) {
   const { currentStep, setCurrentStep, company_id } = step_setting;
@@ -54,7 +54,7 @@ function Admin_step({ step_setting }) {
         console.log(value);
         
       value.company_id = company_id;
-      dispatch(add_owner(value));
+      dispatch(add_user(value));
     },
   });
 

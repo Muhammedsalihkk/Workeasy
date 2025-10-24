@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { FiUser } from 'react-icons/fi';
 import { useDispatch, useSelector } from 'react-redux';
-import { employee_profile_get } from '../Redux/Slice/Employee/Profile';
+import { user_profile_get } from '../Redux/Slice/userSlice/Profile';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import { edit_employee } from '../Redux/Slice/Employee/Edit';
@@ -22,7 +22,7 @@ const EditProfile = ({ message }) => {
   useEffect(() => {
     const getUser = async () => {
       try {
-        await dispatch(employee_profile_get(employeeid)).unwrap();
+        await dispatch(user_profile_get(employeeid)).unwrap();
       } catch (error) {
         console.log(error);
       }

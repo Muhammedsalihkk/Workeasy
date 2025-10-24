@@ -1,6 +1,6 @@
 import cloudinary from "../config/cloudinaryConfig";
 import fs from 'fs'
-export const ulpaodfile = async (filepath: string) => {
+export const uploadFile = async (filepath: string) => {
     try {
         const result = await cloudinary.uploader.upload(filepath)
         fs.unlink(filepath,()=>{

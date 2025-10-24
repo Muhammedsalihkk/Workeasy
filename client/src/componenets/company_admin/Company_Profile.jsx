@@ -21,7 +21,6 @@ import {
 } from 'react-icons/fa';
 import Header from './Header';
 import { useDispatch, useSelector } from 'react-redux';
-import { Owner_profile_get } from '../Redux/Slice/Owner_slices/Profile';
 import { company_Profile } from '../Redux/Slice/Company_slice/Profile';
 import { useFormik } from 'formik';
 import * as yup from 'yup';
