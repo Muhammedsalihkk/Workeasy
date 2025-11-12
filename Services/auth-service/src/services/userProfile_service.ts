@@ -5,6 +5,8 @@ import { add_activity } from "./Addtoactivity";
 
 export const UserEdit = async (user_data: any) => {
   try {
+    console.log("datais ",user_data);
+    
     const respons = await UserModel.findByIdAndUpdate(
       user_data.updation_id,
       { ...user_data },
@@ -15,7 +17,7 @@ export const UserEdit = async (user_data: any) => {
     const update = await add_activity(user_data.updation_id, "profile Edited");
     return respons;
   } catch (error: any) {
-    console.log(error.code);
+    console.log("this is error",error);
 
     throw error.code;
   }

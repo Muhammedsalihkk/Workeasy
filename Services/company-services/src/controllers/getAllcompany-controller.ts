@@ -1,6 +1,7 @@
 import { NextFunction, Request, Response } from "express";
 import { gettallcompany_service } from "../services/getAllcompany_service";
 import { Onecompany_service } from "../services/getOnecompany_service";
+import { AuthRequest } from "../interface/company.interface";
 
 export const getallcompany = async (req: Request, res: Response,next:NextFunction): Promise<void> => {
     try {
@@ -24,9 +25,10 @@ export const getallcompany = async (req: Request, res: Response,next:NextFunctio
     }
 
 }
-export const get_Onecompany = async (req: Request, res: Response,next:NextFunction): Promise<void> => {
+export const get_Onecompany = async (req: AuthRequest, res: Response,next:NextFunction): Promise<void> => {
     try {
-        const id  = req.params.id||res.locals.company_id
+        const id  = req.params.id||req.user.company_id
+        
         const data = await Onecompany_service(id)
         if (!data) {
          const err:any=new Error("id not match with any comapny")

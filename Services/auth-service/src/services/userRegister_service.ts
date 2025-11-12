@@ -22,7 +22,10 @@ export const User_register = async (userdata: User, company_id: string) => {
             number: userdata.number,
             company_role: userdata.company_role,
             department:userdata.department, 
-            qualification:userdata.qualification
+            qualification:userdata.qualification,
+            status: userdata.status || "active",
+            dob: userdata.dob,
+            Address: userdata.Address
         })  
         return result
     }

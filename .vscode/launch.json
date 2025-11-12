@@ -5,6 +5,7 @@
     "version": "0.2.0",
     "configurations": [
     {
+        "program": "${workspaceFolder}/Services/auth-service/src",
         "command": "npm start",
         "name": "Run npm start",
         "request": "launch",

@@ -1,6 +1,7 @@
 import { NextFunction, Request, Response } from "express";
 import { UserAll } from "../services/userGetall_service";
-export const getall_User = async (req: Request, res: Response, next: NextFunction) => {
+import { AuthRequest } from "../interfaces/interface";
+export const getall_User = async (req: AuthRequest, res: Response, next: NextFunction) => {
     try {
         const limit: number = Number(req.query.limit) || 10
         const page: number = Number(req.query.page) || 1
@@ -8,10 +9,11 @@ export const getall_User = async (req: Request, res: Response, next: NextFunctio
         const search = req.query.search as string || ""
         const department = req.query.department as string || ""
         const status = req.query.status as string || ""
-        const shift = req.query.shift as string || ""    
-        const company_id=res.locals.company_id
+        const shift = req.query.shift as string || ""   
+        const company_role=req.query.company_role as string ||""
+        const company_id=req.user.company_id
 
-        const respons = await UserAll(limit,skip,search,department,status,shift,company_id,)
+        const respons = await UserAll(limit,skip,search,department,status,shift,company_role,company_id)
         res.status(200).json(respons)
     }
     catch (error) {

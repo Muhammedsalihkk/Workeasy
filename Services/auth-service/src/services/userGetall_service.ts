@@ -7,12 +7,14 @@ export const UserAll = async (limit: number,
     department: string,
     status: string,
     shift: string,
+    company_role:string,
     id: string): Promise<any> => {
     try {
         const query: any = { company_id: id }
         if (department) query.department = department
         if (status) query.status = status
         if (shift) query.shift = shift
+        if(company_role) query.company_role=company_role
         if (search) {
             query.$or = [
                 { name: { $regex: search, $options: "i" } },
@@ -32,8 +34,12 @@ export const UserAll = async (limit: number,
             email: 1,
             department: 1,
             join_date: 1,
-            employee_id: 1
-        }).skip(skip).limit(limit)
+            employee_id: 1,
+            Address: 1,
+            gender: 1,
+            dob: 1,
+            qualification: 1
+        }).skip(skip).limit(limit).sort({ _id: -1 })
         return employees
     }
     catch (error) {

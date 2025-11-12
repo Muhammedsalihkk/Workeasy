@@ -1,10 +1,11 @@
 import Order from "../models/order-Models";
 import { IOrder } from "../types/ordertypes";
 import { parseExcelFile } from "../utils/parseExcelFile";
-import { getcompanyBYid } from "./otherservices";
+import { getcompanyBYid, getuserByid } from "./otherservices";
 
 export const fetchAllOrders = async (
   company_id: string,
+  token:string,
   filters?: {
     status?: string;
     paymentStatus?: string;
@@ -44,10 +45,9 @@ export const fetchAllOrders = async (
   const detaildOrder = await Promise.all(
     data.map(async(order)=>({
       ...order.toObject(),
-      companyName:await getcompanyBYid(order.company_id as string)
+      createdBy:await getuserByid(order.createdBy as string,token)
     }))
   )
-  
   return { detaildOrder };
 };
 export const fetchOrderById = async (id: string): Promise<IOrder | null> => {

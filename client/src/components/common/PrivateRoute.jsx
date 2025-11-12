@@ -12,6 +12,7 @@ function Privatrouter({ children }) {
         const response = await dispatch(user_profile_get()).unwrap();
     }
     catch(err){
+      console.log("this is your error",err.status);
         if(err.status==401){
           navigate('/login')
         }

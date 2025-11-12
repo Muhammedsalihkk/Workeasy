@@ -9,6 +9,9 @@ import Dashboard from './pages/company/Dashboard'
 import AppLayout from './components/layouts/AppLayout'
 import OrderTable from './pages/company/orders/index'
 import OrderDetail from './pages/company/orders/details'
+import EmployeesTable from './pages/company/employees/index'
+import EmployeeProfile from './pages/company/employees/EmployeeProfile'
+import CreateEmployee from './pages/company/employees/createEmployee'
 import UserProfile from './pages/company/UserProfile'
 import PrivateRoute from './components/common/PrivateRoute'
 import CompanyProfile from './pages/company/CompanyProfile'
@@ -35,6 +38,9 @@ function App() {
              <Route path="/orders/new" element={<AddOrderForm />} />
              <Route path='/orders' element={<OrderTable/>}/>
              <Route path='/orders/detail'element={<OrderDetail/>}/>
+             <Route path='/employees' element={<EmployeesTable/>}/>
+             <Route path='/employees/new' element={<CreateEmployee data={{}}/>}/>
+             <Route path='/employees/profile/:id' element={<EmployeeProfile/>}/>
              <Route path="/user/profile" element={<UserProfile/>}/>
              <Route path="/companyProfile" element={<CompanyProfile/>}/>
             </Route>

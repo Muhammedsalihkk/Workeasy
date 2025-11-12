@@ -117,10 +117,10 @@ export default function OrderTable() {
   if (error) return <p>Error: {error}</p>;
 
   return (
-    <div className="flex h-screen bg-gray-50">
+    <div className="ml-64 flex h-screen bg-gray-50">
       <div className="flex-1 flex flex-col overflow-hidden">
         {/* Top Bar */}
-        <div className="bg-white border-b border-gray-200 px-6 py-4 flex w-320 items-center justify-between">
+        <div className="bg-white border-b border-gray-200 px-6 py-4 flex w-300 items-center justify-between">
           {/* Search */}
           <div className="relative flex-1 max-w-md">
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />

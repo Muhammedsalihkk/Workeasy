@@ -5,19 +5,63 @@ export const user_edit = createAsyncThunk(
   "user/edit",
   async (data, thunkAPI) => {
     try {
+      // Check if data is FormData to set proper headers
+      const config = {
+        withCredentials: true,
+      };
+      
+      // If data is FormData, let axios set Content-Type automatically
+      // Otherwise, set it to application/json
+      if (!(data instanceof FormData)) {
+        config.headers = {
+          'Content-Type': 'application/json',
+        };
+      }
+      console.log(data);
+      
       const response = await axios.put(
         "http://localhost/auth/user/edit_profile",
         data,
-        { withCredentials: true }
+        config
       );
-      console.log(response.data);
       
       return response.data;
     } catch (error) {
-      console.log("error",error.message);
-      
       return thunkAPI.rejectWithValue(
-        (error.response && error.response.data) || "Something went wrong"
+        error.response?.data || error.message || "Something went wrong"
+      );
+    }
+  }
+);
+
+// Async thunk for editing employee profile by ID
+export const employee_edit = createAsyncThunk(
+  "employee/edit_profile",
+  async ({ employeeId, data }, thunkAPI) => {
+    try {
+      // Check if data is FormData to set proper headers
+      const config = {
+        withCredentials: true,
+      };
+      
+      // If data is FormData, let axios set Content-Type automatically
+      // Otherwise, set it to application/json
+      if (!(data instanceof FormData)) {
+        config.headers = {
+          'Content-Type': 'application/json',
+        };
+      }
+     
+      const response = await axios.put(
+        `http://localhost/auth/employee/edit_profile/${employeeId}`,
+        data,
+        config
+      );
+      
+      return response.data;
+    } catch (error) {
+      return thunkAPI.rejectWithValue(
+        error.response?.data || error.message || "Something went wrong"
       );
     }
   }
@@ -45,6 +89,17 @@ const user_edit_slice = createSlice({
         state.editLoading = false;
       })
       .addCase(user_edit.rejected, (state, action) => {
+        state.editError = action.payload;
+        state.editLoading = false;
+      })
+      .addCase(employee_edit.pending, (state) => {
+        state.editLoading = true;
+      })
+      .addCase(employee_edit.fulfilled, (state, action) => {
+        state.user_edit_response = action.payload;
+        state.editLoading = false;
+      })
+      .addCase(employee_edit.rejected, (state, action) => {
         state.editError = action.payload;
         state.editLoading = false;
       });

@@ -9,13 +9,16 @@ export const authentication = async (data: any): Promise<any> => {
 
     try {
         const employee: any = await UserModel.find({ email: data.email })
-
+        
+        
         if (employee.length == 0) {
             const err: any = new Error("user not existing")
             err.code = 404
             throw err
         }
         const company_blocked = await is_blocked(employee[0].company_id)
+        
+        
         if (company_blocked) {
             const err: any = new Error("this company is blocked in our part")
             err.code = 403
@@ -34,6 +37,8 @@ export const authentication = async (data: any): Promise<any> => {
         }
     }
     catch (err: any) {
+        console.log("err",err.message);
+        
         throw err
     }
 }

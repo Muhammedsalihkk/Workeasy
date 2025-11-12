@@ -1,20 +1,21 @@
 import { NextFunction,Request,Response } from "express"
 import { getUserProfile } from "../services/userProfile_service";
+import { AuthRequest } from "../interfaces/interface";
 
 
 
 export const getUserProfileController = async (
-  req: Request,
+  req: AuthRequest,
   res: Response,
   next: NextFunction
 ): Promise<void> => {
   try {
-    const userId = req.query.id ? String(req.query.id) : res.locals.user_id;
-
+    const userId = req.params.id || req.user.userId
     if (!userId) {
-      res.status(400).json({ success: false, message: "User ID is required" });
+      res.status(500).json({ success: false, message: "User ID is required" });
       return;
     }
+
 
     const userProfile = await getUserProfile(userId);
 

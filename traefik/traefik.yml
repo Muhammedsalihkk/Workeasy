@@ -3,4 +3,7 @@ entryPoints:
       address: ":80"
 providers:
   docker:
-    exposedByDefault: false
+    exposedByDefault: false 
+  file:
+    directory: /directory
+    watch: true

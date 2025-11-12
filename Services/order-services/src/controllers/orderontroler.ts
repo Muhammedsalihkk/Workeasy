@@ -17,8 +17,9 @@ export const getAllOrders = async (
 ): Promise<void> => {
   try {
   
+    const token:string=req.cookies.token
     
-    const orders = await fetchAllOrders(req.user.company_id,req.query);
+    const orders = await fetchAllOrders(req.user.company_id,token,req.query);
     res.status(200).json(orders);
   } catch (err:any) {
     console.log(err.message)
@@ -76,7 +77,6 @@ export const bulkorderInsertion =async (
 export const massEditTransactions = async (req:AuthRequest, res:Response,next:NextFunction) => {
   try {
     const { ids, updates } = req.body;
-    
     const result = await massUpdateTransactions(ids, updates);
 
     res.status(200).json({

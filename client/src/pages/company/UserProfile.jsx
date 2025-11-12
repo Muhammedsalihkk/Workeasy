@@ -5,6 +5,7 @@ import * as yup from "yup";
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
 import { ToastContainer, toast } from "react-toastify";
+import { CameraIcon, PencilSquareIcon } from '@heroicons/react/24/outline';
 import { useNavigate } from "react-router-dom";
  
 // Redux actions
@@ -15,6 +16,7 @@ import {
 } from "../../store/slices/Slice/userSlice/Password";
 import { clearError, user_edit } from "../../store/slices/Slice/userSlice/Edit";
 import { user_profile_get } from "../../store/slices/Slice/userSlice/Profile";
+import { getProfileImage, appendImageToFormData } from "../../utils/imageUtil";
 import { user_logout } from "../../store/slices/Slice/userSlice/Logout";
 
 const UserProfile = () => {
@@ -77,26 +79,78 @@ const UserProfile = () => {
       number: yup
         .string()
         .required("Phone required")
-        .matches(/^[0-9]{10}$/, "Enter 10 digit number"),
+        .matches(/^[6-9]\d{9}$/, "Enter valid 10-digit mobile starting with 6-9"),
+      gender: yup.string().required("Gender is required"),
+      qualification: yup.string().required("Qualification is required"),
+      company_role: yup.string().oneOf(["Admin", "Employee"]).required("Role is required"),
+      // For Admin: dob, employee_id, join_date, department, shift are NOT required
+      // These fields remain optional (won't be validated for admins)
+      dob: yup.string().optional(),
+      join_date: yup.string().optional(),
+      department: yup.string().optional(),
+      employee_id: yup.string().optional(),
+      shift: yup.mixed().optional(),
+      // Address fields are optional
+      address_place: yup.string().optional(),
+      address_pin: yup
+        .number()
+        .typeError("PIN must be a number")
+        .test(
+          "len-or-empty",
+          "PIN must be 6 digits",
+          (val) => !val || String(val).length === 6
+        ),
+      address_distct: yup.string().optional(),
+      address_state: yup.string().optional(),
     }),
     onSubmit: async (values) => {
       try {
-        const response = await dispatch(user_edit(values)).unwrap();
+        // For Admin, exclude employee-only fields from payload
+        const payload = {
+          name: values.name,
+          email: values.email,
+          number: values.number,
+          gender: values.gender,
+          qualification: values.qualification,
+          company_role: values.company_role,
+        };
+
+        // Build address object if any address fields are set
+        const address = {};
+        if (values.address_place) address.place = values.address_place;
+        if (values.address_pin) {
+          const parsed = parseInt(values.address_pin, 10);
+          if (!Number.isNaN(parsed)) {
+            address.pin = parsed;
+          }
+        }
+        if (values.address_distct) address.distct = values.address_distct;
+        if (values.address_state) address.state = values.address_state;
+
+        if (Object.keys(address).length > 0) {
+          payload.Address = address;
+        }
+
+        const response = await dispatch(user_edit(payload)).unwrap();
         dispatch(clearError());
         toast.success("Profile updated successfully!");
         setIsEditing(false);
       } catch (error) {
+        toast.error(error?.message || "Failed to update profile");
         console.log(error);
       }
     },
   });
 
   const handleImageChange = (e) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
     const formdata = new FormData();
-    formdata.append("images", e.target.files[0]);
+    // append under both names for compatibility with backend
+    appendImageToFormData(formdata, file);
     dispatch(user_edit(formdata));
   };
-console.log(userData);
+
 
   const handleEditImage = () => fileInputRef.current.click();
 
@@ -180,7 +234,7 @@ console.log(userData);
   return (
 <>
   <ToastContainer />
-  <div className="min-h-screen bg-gray-100 pt-24 px-4 md:px-20">
+  <div className="ml-64 min-h-screen bg-gray-100 pt-24 px-4 md:px-20">
     <div className="bg-white rounded-xl shadow-md overflow-hidden">
       {/* Profile Header */}
       <div className="relative h-48 bg-gradient-to-r from-blue-800 to-blue-600">
@@ -191,28 +245,37 @@ console.log(userData);
         />
         <div className="absolute inset-0 bg-gradient-to-r from-blue-900 via-blue-700 to-blue-600 opacity-80"></div>
         <div className="relative z-10 flex items-center gap-6 p-6">
-          <div className="w-24 h-24 rounded-full border-4 border-white overflow-hidden relative">
-            <img
-              src={
-                userData?.img ||
-                "https://img.freepik.com/premium-vector/vector-flat-illustration-black-color-avatar-user-profile-person-icon.jpg"
-              }
-              alt="profile"
-              className="w-full h-full object-cover"
-            />
-            <button
-              onClick={handleEditImage}
-              className="absolute bottom-0 right-0 bg-white p-1 rounded-full shadow hover:bg-gray-200"
-            >
-              Edit
-            </button>
-            <input
-              type="file"
-              ref={fileInputRef}
-              onChange={handleImageChange}
-              className="hidden"
-            />
-          </div>
+            <div className="w-24 h-24 rounded-full border-4 border-white overflow-hidden relative bg-gray-100">
+              { (userData?.img || userData?.avatar || userData?.logo) ? (
+                <img
+                  src={getProfileImage(userData)}
+                  alt="profile"
+                  className="w-full h-full object-cover"
+                />
+              ) : (
+                <div className="w-full h-full flex items-center justify-center bg-gray-200">
+                  {/* human profile SVG icon */}
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-12 w-12 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 21a6.5 6.5 0 00-13 0" />
+                  </svg>
+                </div>
+              )}
+              <button
+                onClick={handleEditImage}
+                className="absolute bottom-0 right-0 bg-white p-1 rounded-full shadow hover:bg-gray-200"
+                aria-label="Edit profile image"
+              >
+                <CameraIcon className="w-5 h-5 text-gray-700" />
+              </button>
+              <input
+                type="file"
+                ref={fileInputRef}
+                onChange={handleImageChange}
+                className="hidden"
+                accept="image/*"
+              />
+            </div>
           <div className="text-white">
             <h1 className="text-3xl font-bold">
               {userData?.name || "Loading..."}
@@ -233,65 +296,102 @@ console.log(userData);
         onSubmit={formik.handleSubmit}
         className="p-6 grid grid-cols-1 md:grid-cols-2 gap-6"
       >
+        {/* Admin-required fields */}
         {[
           { label: "Full Name", name: "name" },
           { label: "Email", name: "email" },
           { label: "Phone", name: "number" },
           { label: "Gender", name: "gender" },
-          { label: "DOB", name: "dob", type: "date" },
-          { label: "Shift", name: "shift" },
-          { label: "Department", name: "department" },
-          { label: "Role", name: "company_role" },
           { label: "Qualification", name: "qualification" },
         ].map((field) => (
           <div key={field.name}>
-            <label className="block text-gray-500 text-sm">{field.label}</label>
+            <label className="block text-gray-700 text-sm font-medium mb-1">
+              {field.label}
+            </label>
             {isEditing ? (
-              <input
-                type={field.type || "text"}
-                name={field.name}
-                value={formik.values[field.name] || ""}
-                onChange={formik.handleChange}
-                className="w-full border-b py-1 focus:outline-none focus:border-blue-500"
-              />
+              <>
+                <input
+                  type={field.type || "text"}
+                  name={field.name}
+                  value={formik.values[field.name] || ""}
+                  onChange={formik.handleChange}
+                  onBlur={formik.handleBlur}
+                  className="w-full border border-gray-300 px-3 py-2 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+                />
+                {formik.touched[field.name] && formik.errors[field.name] && (
+                  <p className="text-red-600 text-sm mt-1">{formik.errors[field.name]}</p>
+                )}
+              </>
             ) : (
-              <p className="font-medium">{formik.values[field.name]}</p>
+              <p className="font-medium text-gray-900">{formik.values[field.name] || "-"}</p>
             )}
           </div>
         ))}
+
+        {/* Address fields (optional for all) */}
+        {isEditing && (
+          <>
+            <div className="md:col-span-2">
+              <h3 className="text-lg font-semibold text-gray-900 mb-4">Address (Optional)</h3>
+            </div>
+            {[
+              { label: "Place", name: "address_place" },
+              { label: "District", name: "address_distct" },
+              { label: "State", name: "address_state" },
+              { label: "PIN Code", name: "address_pin" },
+            ].map((field) => (
+              <div key={field.name}>
+                <label className="block text-gray-700 text-sm font-medium mb-1">
+                  {field.label}
+                </label>
+                <input
+                  type={field.name === "address_pin" ? "number" : "text"}
+                  name={field.name}
+                  value={formik.values[field.name] || ""}
+                  onChange={formik.handleChange}
+                  onBlur={formik.handleBlur}
+                  className="w-full border border-gray-300 px-3 py-2 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+                />
+                {formik.touched[field.name] && formik.errors[field.name] && (
+                  <p className="text-red-600 text-sm mt-1">{formik.errors[field.name]}</p>
+                )}
+              </div>
+            ))}
+          </>
+        )}
       </form>
 
       {/* Buttons */}
-      <div className="ml-10 flex justify-evenly">
-
-        <div className="md:col-span-2 flex  gap-4 mt-4">
-          {isEditing ? (
-            <>
-              <button
-                type="submit"
-                onClick={()=>formik.handleSubmit()}
-                className="bg-blue-600 text-white px-4 py-2 rounded-lg"
-              >
-                Save
-              </button>
-              <button
-                type="button"
-                onClick={() => setIsEditing(false)}
-                className="bg-gray-300 text-gray-800 px-4 py-2 rounded-lg"
-              >
-                Cancel
-              </button>
-            </>
-          ) : (
+      <div className="p-6 border-t flex gap-4">
+        {isEditing ? (
+          <>
+            <button
+              type="submit"
+              onClick={() => formik.handleSubmit()}
+              className="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700"
+            >
+              Save Changes
+            </button>
             <button
               type="button"
-              onClick={() => setIsEditing(true)}
-              className="bg-blue-600 text-white px-4 py-2 rounded-lg"
+              onClick={() => {
+                setIsEditing(false);
+                formik.resetForm();
+              }}
+              className="bg-gray-300 text-gray-800 px-6 py-2 rounded-lg hover:bg-gray-400"
             >
-              Edit Profile
+              Cancel
             </button>
-          )}
-        </div>
+          </>
+        ) : (
+          <button
+            type="button"
+            onClick={() => setIsEditing(true)}
+            className="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700"
+          >
+            Edit Profile
+          </button>
+        )}
       </div>
 
       {/* Password Reset */}

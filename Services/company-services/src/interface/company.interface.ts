@@ -1,5 +1,5 @@
 import { Document } from "mongoose"
-
+import {Request} from "express"
 export interface address{
         place:string,
         pin:number,
@@ -25,4 +25,10 @@ export interface company extends Document{
     admin_name:string,
     plan_type:string,
     plan_end:string
+}
+export interface AuthRequest extends Request {
+  user?: any;
+  cookies: {
+    token: string;
+  };
 }

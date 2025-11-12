@@ -1,11 +1,11 @@
 import { Document, Types } from "mongoose";
-import {Request} from 'express'
+import { Request } from "express";
 export interface IOrder extends Document {
   customerName: string;
   product: string;
   quantity: number;
   status?: "pending" | "completed" | "cancelled";
-  
+
   // These are ObjectId references
   company_id: Types.ObjectId | string;
   createdBy?: Types.ObjectId | string;
@@ -22,5 +22,8 @@ export interface CustomError extends Error {
   statusCode?: number;
 }
 export interface AuthRequest extends Request {
-  user?: any; // you can replace `any` with a proper User type
+  user?: any;
+  cookies: {
+    token: string;
+  };
 }

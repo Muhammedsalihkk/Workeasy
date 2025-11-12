@@ -1,14 +1,14 @@
 services:
-  client:
-    build: ./client
-    image: client-image
-    container_name: client-container
-    ports:
-      - "5173:5173"
 
   rabbit-mq:
     image: rabbitmq:3-management
     container_name: rabbit-mq
+    healthcheck:
+      test: ["CMD", "rabbitmqctl", "status"]
+      interval: 30s
+      timeout: 20s
+      retries: 5
+      start_period: 20s
     ports:
       - "5672:5672"
       - "15672:15672"
@@ -20,66 +20,58 @@ services:
     build:
       context: ./services/auth-service
       dockerfile: Dockerfile.dev
-    labels:
-      - "traefik.enable=true"
-      - "traefik.http.routers.auth.rule=PathPrefix(`/auth`)"
-      - "traefik.http.services.auth.loadbalancer.server.port=3001"
     container_name: auth-service
     volumes:
       - ./services/auth-service:/app
-    command: npx ts-node src/app.ts
+      - /app/node_modules
     env_file:
       - ./services/auth-service/.env
     depends_on:
-      - rabbit-mq
+      rabbit-mq:
+        condition: service_healthy
 
   company-service:
     build:
       context: ./services/company-services
       dockerfile: Dockerfile.dev
     container_name: company-service
-    labels:
-      - "traefik.enable=true"
-      - "traefik.http.routers.company.rule=PathPrefix(`/api/companies`)"
-      - "traefik.http.services.company.loadbalancer.server.port=3000"
     volumes:
       - ./services/company-services:/app
-    command: npx ts-node src/app.ts
+      - /app/node_modules
+    
     env_file:
       - ./services/company-services/.env
     depends_on:
-      - rabbit-mq
+       rabbit-mq:
+          condition: service_healthy
+    restart: always
 
   subscription-service:
     build:
       context: ./services/subscription-service
       dockerfile: Dockerfile.dev
     container_name: subscription-service
-    labels:
-      - "traefik.enable=true"
-      - "traefik.http.routers.subscription.rule=PathPrefix(`/api/subscription`)"
-      - "traefik.http.services.subscription.loadbalancer.server.port=3002"
     volumes:
       - ./services/subscription-service:/app
-    command: npx ts-node src/app.ts
+      - /app/node_modules
+    
     env_file:
       - ./services/subscription-service/.env
     depends_on:
       - rabbit-mq
+    restart: always
 
   order-service:
     build:
       context: ./services/order-services
       dockerfile: Dockerfile.dev
     container_name: order-service
-    labels:
-      - "traefik.enable=true"
-      - "traefik.http.routers.orders.rule=PathPrefix(`/api/orders`)"
-      - "traefik.http.services.orders.loadbalancer.server.port=3005"
     volumes:
       - ./services/order-services:/app
+      - /app/node_modules
     env_file:
       - ./services/order-services/.env
+    restart: always
 
   attendence-server:
     build:
@@ -93,7 +85,7 @@ services:
       - "traefik.http.services.attendence.loadbalancer.server.port=3003"
     volumes:
       - ./services/attendence:/app
-    command: sh -c "npx ts-node src/app.ts"
+      - /app/node_modules
     env_file:
       - ./services/attendence/.env
     depends_on:
@@ -104,15 +96,13 @@ services:
       dockerfile: Dockerfile.dev
       context: ./services/Stockes-service
     container_name: stock-service
-    labels:
-      - "traefik.enable=true"
-      - "traefik.http.routers.stock.rule=PathPrefix(`/api/stock`)"
-      - "traefik.http.services.stock.loadbalancer.server.port=3004"
     volumes:
-      - ./services/subscription-service:/app
-    command: npx ts-node src/app.ts
+      - ./services/Stockes-service:/app
+      - /app/node_modules
     env_file:
       - ./services/Stockes-service/.env
+    
+
 
   traefik:
     image: traefik:v3.0
@@ -122,4 +112,5 @@ services:
       - "80:80"
     volumes:
       - ./traefik/traefik.yml:/etc/traefik/traefik.yml
+      - ./traefik/directory:/directory
       - /var/run/docker.sock:/var/run/docker.sock

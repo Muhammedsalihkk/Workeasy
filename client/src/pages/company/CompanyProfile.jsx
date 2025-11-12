@@ -16,6 +16,7 @@ import { useFormik } from 'formik';
 import * as yup from 'yup';
 import { company_Profile } from '../../store/slices/Slice/Company_slice/Profile';
 import { edit_Company_Profile } from '../../store/slices/Slice/Company_slice/Edit';
+import { getProfileImage, appendImageToFormData } from '../../utils/imageUtil';
 
 const CompanyProfile = () => {
     const [showDocuments, setShowDocuments] = useState(false);
@@ -77,13 +78,16 @@ const CompanyProfile = () => {
     };
 
     const handleChange = (e) => {
+        const file = e.target.files?.[0];
+        if (!file) return;
         const formData = new FormData();
-        formData.append("image", e.target.files[0]);
+        // append under both names so backend that expects either will work
+        appendImageToFormData(formData, file);
         dispatch(edit_Company_Profile(formData));
     };
 
     return (
-        <div className="min-h-screen w-full bg-gradient-to-br from-gray-50 to-blue-50 py-10 px-4 md:px-10 overflow-auto">
+        <div className=" ml-64 min-h-screen  bg-gradient-to-br from-gray-50 to-blue-50 py-10 px-4 md:px-1 overflow-hidden">
             <div className="mx-auto space-y-8">
                 {/* Profile Card */}
                 <div className="bg-white rounded-2xl shadow-xl border border-gray-100">
@@ -92,7 +96,7 @@ const CompanyProfile = () => {
                             {/* Logo and edit icon */}
                             <div className="relative w-20 h-20 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-full flex items-center justify-center shadow-lg overflow-hidden">
                                 <img
-                                    src={company?.logo}
+                                    src={getProfileImage(company)}
                                     alt="Company logo"
                                     className="w-full h-full object-cover"
                                 />
@@ -100,6 +104,7 @@ const CompanyProfile = () => {
                                     type="file"
                                     ref={fileInputRef}
                                     onChange={handleChange}
+                                    accept="image/*"
                                     className="hidden"
                                 />
                                 <button

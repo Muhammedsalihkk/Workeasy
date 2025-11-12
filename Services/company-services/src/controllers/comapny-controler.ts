@@ -6,7 +6,7 @@ import { delete_services } from "../services/editcompany"
 export const register_company=async(req:Request,res:Response,next:NextFunction):Promise<void>=>{
   
       try{
-        console.log(req.body);
+        
         
         const {error}=validation_company.validate(req.body)
         

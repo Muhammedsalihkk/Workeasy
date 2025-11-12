@@ -13,7 +13,9 @@ import dashbord from './slices/Slice/Company_slice/Dashbord';
 import order_reducer from './slices/Slice/orders/getall';
 import massEditReducer from './slices/Slice/orders/editAll';
 import createOrderReduce from './slices/Slice/orders/createOne';
-
+import employee_register_reducer from './slices/Slice/userSlice/EmployeeRegister';
+import getAllUsersReducer from './slices/Slice/userSlice/getAll';
+import deleteEmployeeReducer from './slices/Slice/userSlice/Delete';
 export const store = configureStore({
   reducer: {
     company_add: company_registration_reducer,
@@ -31,6 +33,9 @@ export const store = configureStore({
     company_dashbord: dashbord,
     orders: order_reducer,
     massEdit: massEditReducer,
-    createOrder: createOrderReduce
+    createOrder: createOrderReduce,
+    empoyee_register:employee_register_reducer,
+    employees: getAllUsersReducer,
+    employee_delete: deleteEmployeeReducer,
   }
 });

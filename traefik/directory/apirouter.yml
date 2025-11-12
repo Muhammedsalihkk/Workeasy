@@ -1,0 +1,51 @@
+http:
+  routers:
+    stock-router:
+      rule: PathPrefix(`/api/stock`)
+      service: stock-service
+      entryPoints:
+        - web
+    order-router:
+      rule: PathPrefix(`/api/orders`)
+      service: order-service
+      entryPoints:
+        - web
+    auth-router:
+      rule: PathPrefix(`/auth`)
+      service: auth-service
+      entryPoints:
+        - web
+    company-router:
+      rule: PathPrefix(`/api/companies`)
+      service: company-service
+      entryPoints:
+         - web
+    subscription-router:
+      rule: PathPrefix(`/api/subscription`)
+      service: subscription-service
+      entryPoints:
+         - web
+
+  services:
+    stock-service:
+      loadBalancer:
+        servers:
+          - url: "http://stock-service:3004" 
+    order-service:
+      loadBalancer:
+        servers:
+          - url: "http://order-service:3005"
+    auth-service:
+      loadBalancer:
+        servers:
+          - url: "http://auth-service:3001"
+    company-service:
+      loadBalancer:
+        servers:
+          - url: "http://company-service:3000"
+    subscription-service:
+      loadBalancer:
+        servers:
+          - url: "http://subscription-service:3002"
+
+  

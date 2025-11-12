@@ -2,7 +2,6 @@ import { NextFunction, Request, Response } from "express";
 import { authData_validation } from "../middlewares/datavalidation";
 import { authentication } from "../services/userLogin_service";
 
-
 export const userLogin = async (
   req: Request,
   res: Response,
