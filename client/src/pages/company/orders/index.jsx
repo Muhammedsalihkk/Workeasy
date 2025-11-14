@@ -14,6 +14,7 @@ import { get_all_orders } from "../../../store/slices/Slice/orders/getall";
 import { massEditTransactions } from "../../../store/slices/Slice/orders/editAll";
 import { useNavigate } from "react-router-dom";
 import AddOrderForm from "./addNew";
+import Loading from "../../../components/common/Loadig";
 
 export default function OrderTable() {
   const [searchTerm, setSearchTerm] = useState("");
@@ -113,7 +114,7 @@ export default function OrderTable() {
     return transaction.customerName?.toLowerCase().includes(term);
   });
 
-  if (loading) return <p>Loading...</p>;
+  if (loading) return <Loading/>;
   if (error) return <p>Error: {error}</p>;
 
   return (
@@ -432,7 +433,7 @@ export default function OrderTable() {
                     <tr
                       key={transaction._id}
                       className="hover:bg-gray-50 transition"
-                      onClick={()=>navigate('/orders/detail')}
+                      onClick={()=>navigate(`/orders/detail/${transaction._id}`)}
                     >
                       <td className="px-6 py-4">
                         <input

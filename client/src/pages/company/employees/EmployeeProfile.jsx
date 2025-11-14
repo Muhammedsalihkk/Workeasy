@@ -4,7 +4,10 @@ import { useParams, useNavigate } from "react-router-dom";
 import { useFormik } from "formik";
 import * as yup from "yup";
 import { ToastContainer, toast } from "react-toastify";
-import { getProfileImage, appendImageToFormData } from '../../../utils/imageUtil';
+import {
+  getProfileImage,
+  appendImageToFormData,
+} from "../../../utils/imageUtil";
 import {
   PencilSquareIcon,
   ArrowLeftIcon,
@@ -12,11 +15,12 @@ import {
   XMarkIcon,
   CameraIcon,
 } from "@heroicons/react/24/outline";
-import { employee_profile_get } from "../../../store/slices/Slice/userSlice/Profile";
+import { employee_profile_get } from "../../../store/slices/Slice/userSlice/employeeProfile";
 import {
   employee_edit,
   clearError,
 } from "../../../store/slices/Slice/userSlice/Edit";
+import Loading from "../../../components/common/Loadig";
 
 const EmployeeProfile = () => {
   const { id } = useParams();
@@ -26,9 +30,10 @@ const EmployeeProfile = () => {
   const [isEditing, setIsEditing] = useState(false);
   const [userData, setUserData] = useState(null);
 
-  const { user_profile_response, loading, error } = useSelector(
-    (state) => state.user_profile
+  const { employee_profile_response, loading, error } = useSelector(
+    (state) => state.employee_profile
   );
+
   const { editLoading, editError } = useSelector((state) => state.user_edit);
 
   // Fetch employee profile
@@ -36,14 +41,17 @@ const EmployeeProfile = () => {
     if (id) {
       dispatch(employee_profile_get(id));
     }
+    return () => {
+      setUserData(null);
+    };
   }, [id, dispatch]);
 
   // Update local state when profile is fetched
   useEffect(() => {
-    if (user_profile_response?.success && user_profile_response?.data) {
-      setUserData(user_profile_response.data);
+    if (employee_profile_response?.success && employee_profile_response?.data) {
+      setUserData(employee_profile_response.data);
     }
-  }, [user_profile_response]);
+  }, [employee_profile_response]);
 
   // Formik setup
   const formik = useFormik({
@@ -54,13 +62,14 @@ const EmployeeProfile = () => {
       number: userData?.number || "",
       gender: userData?.gender || "",
       dob: userData?.dob || "",
-      shift: typeof userData?.shift === "object" && userData?.shift !== null
-        ? {
-            type: userData?.shift?.type || "",
-            startTime: userData?.shift?.startTime || "",
-            endTime: userData?.shift?.endTime || "",
-          }
-        : { type: "", startTime: "", endTime: "" },
+      shift:
+        typeof userData?.shift === "object" && userData?.shift !== null
+          ? {
+              type: userData?.shift?.type || "",
+              startTime: userData?.shift?.startTime || "",
+              endTime: userData?.shift?.endTime || "",
+            }
+          : { type: "", startTime: "", endTime: "" },
       join_date: userData?.join_date || "",
       department: userData?.department || "",
       company_role: userData?.company_role || "",
@@ -78,41 +87,42 @@ const EmployeeProfile = () => {
       number: yup
         .string()
         .required("Phone required")
-        .matches(/^[6-9]\d{9}$/, "Enter valid 10-digit mobile starting with 6-9"),
-      gender: yup.string().oneOf(["Male", "Female", "Other"]).required("Gender is required"),
-      company_role: yup.string().oneOf(["Admin", "Employee"]).required("Role is required"),
+        .matches(
+          /^[6-9]\d{9}$/,
+          "Enter valid 10-digit mobile starting with 6-9"
+        ),
+      gender: yup
+        .string()
+        .oneOf(["Male", "Female", "Other"])
+        .required("Gender is required"),
+      company_role: yup
+        .string()
+        .oneOf(["Admin", "Employee"])
+        .required("Role is required"),
       qualification: yup.string().required("Qualification is required"),
-      employee_id: yup
-        .string()
-        .when("company_role", {
-          is: (role) => role === "Employee",
-          then: (schema) => schema.required("Employee ID is required"),
-          otherwise: (schema) => schema.optional(),
-        }),
-      dob: yup
-        .string()
-        .when("company_role", {
-          is: (role) => role === "Employee",
-          then: (schema) => schema.required("DOB is required"),
-          otherwise: (schema) => schema.optional(),
-        }),
-      join_date: yup
-        .string()
-        .when("company_role", {
-          is: (role) => role === "Employee",
-          then: (schema) => schema.required("Join date is required"),
-          otherwise: (schema) => schema.optional(),
-        }),
-      department: yup
-        .string()
-        .when("company_role", {
-          is: (role) => role === "Employee",
-          then: (schema) =>
-            schema
-              .oneOf(["StockDepartment", "SalesDepartment"])
-              .required("Department is required"),
-          otherwise: (schema) => schema.optional(),
-        }),
+      employee_id: yup.string().when("company_role", {
+        is: (role) => role === "Employee",
+        then: (schema) => schema.required("Employee ID is required"),
+        otherwise: (schema) => schema.optional(),
+      }),
+      dob: yup.string().when("company_role", {
+        is: (role) => role === "Employee",
+        then: (schema) => schema.required("DOB is required"),
+        otherwise: (schema) => schema.optional(),
+      }),
+      join_date: yup.string().when("company_role", {
+        is: (role) => role === "Employee",
+        then: (schema) => schema.required("Join date is required"),
+        otherwise: (schema) => schema.optional(),
+      }),
+      department: yup.string().when("company_role", {
+        is: (role) => role === "Employee",
+        then: (schema) =>
+          schema
+            .oneOf(["StockDepartment", "SalesDepartment"])
+            .required("Department is required"),
+        otherwise: (schema) => schema.optional(),
+      }),
       // Shift validation: required and structured when Employee
       shift: yup.mixed().when("company_role", {
         is: (role) => role === "Employee",
@@ -132,20 +142,18 @@ const EmployeeProfile = () => {
       // Address fields are optional
       address_place: yup.string().optional(),
       address_pin: yup
-      .number()
-      .typeError("PIN must be a number")
-      .test(
-        "len-or-empty",
-        "PIN must be 6 digits",
-        (val) => !val || String(val).length === 6
-      ),
+        .number()
+        .typeError("PIN must be a number")
+        .test(
+          "len-or-empty",
+          "PIN must be 6 digits",
+          (val) => !val || String(val).length === 6
+        ),
       address_distct: yup.string().optional(),
       address_state: yup.string().optional(),
     }),
     onSubmit: async (values) => {
-   
       try {
-       
         const address = {};
         if (values.address_place) address.place = values.address_place;
         if (values.address_pin) {
@@ -171,7 +179,7 @@ const EmployeeProfile = () => {
           employee_id: values.employee_id || undefined,
           status: values.status,
         };
-        
+
         // Shift only for Employees; ensure correct shape
         if (values.company_role === "Employee") {
           payload.shift = {
@@ -189,9 +197,8 @@ const EmployeeProfile = () => {
         if (Object.keys(address).length > 0) {
           payload.Address = address;
         }
-      
+
         const response = await dispatch(
-          
           employee_edit({ employeeId: id, data: payload })
         ).unwrap();
 
@@ -208,8 +215,6 @@ const EmployeeProfile = () => {
       }
     },
   });
-
-  
 
   // Handle image upload
   const handleImageChange = async (e) => {
@@ -235,7 +240,7 @@ const EmployeeProfile = () => {
       console.error("Image upload error:", error);
     }
   };
-console.log(formik.errors);
+  console.log(formik.errors);
 
   const handleEditImage = () => {
     fileInputRef.current?.click();
@@ -249,14 +254,7 @@ console.log(formik.errors);
 
   // Loading state
   if (loading) {
-    return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto"></div>
-          <p className="mt-4 text-gray-600">Loading profile...</p>
-        </div>
-      </div>
-    );
+    return <Loading />;
   }
 
   // Error state
@@ -341,8 +339,13 @@ console.log(formik.errors);
                     {userData?.department || userData?.company_role || "N/A"}
                   </p>
                   <p className="px-4 py-2 text-gray-900 font-medium">
-                    {formik.values.shift && (formik.values.shift.type || formik.values.shift.startTime || formik.values.shift.endTime)
-                      ? `${formik.values.shift.type || ""} ${formik.values.shift.startTime || ""} - ${formik.values.shift.endTime || ""}`
+                    {formik.values.shift &&
+                    (formik.values.shift.type ||
+                      formik.values.shift.startTime ||
+                      formik.values.shift.endTime)
+                      ? `${formik.values.shift.type || ""} ${
+                          formik.values.shift.startTime || ""
+                        } - ${formik.values.shift.endTime || ""}`
                       : "-"}
                   </p>
                 </div>
@@ -521,11 +524,14 @@ console.log(formik.errors);
                             className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                           />
                         </div>
-                        {formik.touched.shift && typeof formik.errors.shift === "object" && (
-                          <div className="text-sm text-red-600">
-                            {formik.errors.shift?.type || formik.errors.shift?.startTime || formik.errors.shift?.endTime}
-                          </div>
-                        )}
+                        {formik.touched.shift &&
+                          typeof formik.errors.shift === "object" && (
+                            <div className="text-sm text-red-600">
+                              {formik.errors.shift?.type ||
+                                formik.errors.shift?.startTime ||
+                                formik.errors.shift?.endTime}
+                            </div>
+                          )}
                       </div>
                     ) : (
                       <input
@@ -537,8 +543,13 @@ console.log(formik.errors);
                     )
                   ) : (
                     <p className="px-4 py-2 text-gray-900 font-medium">
-                      {formik.values.shift && (formik.values.shift.type || formik.values.shift.startTime || formik.values.shift.endTime)
-                        ? `${formik.values.shift.type || ""} ${formik.values.shift.startTime || ""} - ${formik.values.shift.endTime || ""}`
+                      {formik.values.shift &&
+                      (formik.values.shift.type ||
+                        formik.values.shift.startTime ||
+                        formik.values.shift.endTime)
+                        ? `${formik.values.shift.type || ""} ${
+                            formik.values.shift.startTime || ""
+                          } - ${formik.values.shift.endTime || ""}`
                         : "-"}
                     </p>
                   )}

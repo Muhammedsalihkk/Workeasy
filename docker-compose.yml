@@ -15,6 +15,9 @@ services:
     environment:
       RABBITMQ_DEFAULT_USER: workeasy
       RABBITMQ_DEFAULT_PASS: workeasy123
+    user: "0"
+    volumes:
+      - rabbit-mq-data:/var/lib/rabbitmq
 
   auth-service:
     build:
@@ -93,8 +96,8 @@ services:
 
   stock-service:
     build:
-      dockerfile: Dockerfile.dev
       context: ./services/Stockes-service
+      dockerfile: Dockerfile.dev
     container_name: stock-service
     volumes:
       - ./services/Stockes-service:/app
@@ -114,3 +117,6 @@ services:
       - ./traefik/traefik.yml:/etc/traefik/traefik.yml
       - ./traefik/directory:/directory
       - /var/run/docker.sock:/var/run/docker.sock
+
+volumes:
+  rabbit-mq-data:

@@ -1,27 +1,27 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { useParams, useNavigate } from 'react-router-dom';
+import { fetchOrderById, updateOrder, deleteOrder } from '../../../store/slices/Slice/orders/orderDetail';
+import Loading from '../../../components/common/Loadig';
 
 const OrderDetail = () => {
-  // Static order data
-  const [order, setOrder] = useState({
-    _id: "ord_123456789",
-    customerName: "John Smith",
-    product: "MacBook Pro 16-inch",
-    quantity: 2,
-    status: "pending",
-    company_id: "comp_abc123",
-    createdBy: "admin_user",
-    updatedBy: "admin_user",
-    deliveryDate: "2024-12-31T00:00:00.000Z",
-    paymentStatus: "pending",
-    isDelete: false,
-    createdAt: "2024-01-15T10:30:00.000Z",
-    updatedAt: "2024-01-15T10:30:00.000Z"
-  });
+  const { id } = useParams();
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+
+  const { order, loading, error } = useSelector((state) => state.order_detail || { order: null, loading: false, error: null });
 
   const [isEditing, setIsEditing] = useState(false);
-  const [editedOrder, setEditedOrder] = useState({ ...order });
+  const [editedOrder, setEditedOrder] = useState(null);
 
-  // Format date to readable string
+  useEffect(() => {
+    if (id) dispatch(fetchOrderById(id));
+  }, [id, dispatch]);
+
+  useEffect(() => {
+    if (order) setEditedOrder({ ...order });
+  }, [order]);
+
   const formatDate = (dateString) => {
     return new Date(dateString).toLocaleDateString('en-US', {
       year: 'numeric',
@@ -30,7 +30,6 @@ const OrderDetail = () => {
     });
   };
 
-  // Status badge colors
   const getStatusColor = (status) => {
     switch (status) {
       case 'completed':
@@ -44,7 +43,6 @@ const OrderDetail = () => {
     }
   };
 
-  // Payment status badge colors
   const getPaymentStatusColor = (status) => {
     switch (status) {
       case 'paid':
@@ -58,38 +56,39 @@ const OrderDetail = () => {
     }
   };
 
-  // Handle Edit button click
   const handleEdit = () => {
     setIsEditing(true);
     setEditedOrder({ ...order });
   };
 
-  // Handle Save button click
-  const handleSave = () => {
-    setOrder({ 
-      ...editedOrder, 
-      updatedAt: new Date().toISOString(),
-      updatedBy: "current_user" 
-    });
-    setIsEditing(false);
+  const handleSave = async () => {
+    if (!editedOrder || !order) return;
+    const payload = { ...editedOrder, updatedAt: new Date().toISOString(), updatedBy: 'current_user' };
+    try {
+      await dispatch(updateOrder({ id: order._id, payload })).unwrap();
+      setIsEditing(false);
+    } catch (err) {
+      console.error('Failed to update order', err);
+    }
   };
 
-  // Handle Cancel button click
   const handleCancel = () => {
     setEditedOrder({ ...order });
     setIsEditing(false);
   };
 
-  // Handle Delete button click
-  const handleDelete = () => {
+  const handleDelete = async () => {
+    if (!order) return;
     const confirmDelete = window.confirm('Are you sure you want to delete this order?');
-    if (confirmDelete) {
-      setOrder({ ...order, isDelete: true });
-      alert('Order marked as deleted!');
+    if (!confirmDelete) return;
+    try {
+      await dispatch(deleteOrder(order._id)).unwrap();
+      navigate('/company/orders');
+    } catch (err) {
+      console.error('Failed to delete order', err);
     }
   };
 
-  // Handle input changes
   const handleInputChange = (field, value) => {
     setEditedOrder(prev => ({
       ...prev,
@@ -97,12 +96,35 @@ const OrderDetail = () => {
     }));
   };
 
+  if (loading) {
+    return <Loading/>
+  }
+
+  if (error) {
+    return <div className="min-h-screen flex items-center justify-center text-red-600">Error: {String(error)}</div>;
+  }
+
+  if (!order) {
+    return <div className="min-h-screen flex items-center justify-center">No order found</div>;
+  }
+
   return (
-    <div className="min-h-screen bg-gray-50 py-8 px-4">
+    <div className="ml-64 min-h-screen bg-gray-50 py-8 px-4">
       <div className="max-w-4xl mx-auto">
+
         {/* Header */}
         <div className="flex justify-between items-center mb-6">
+          
+          {/* Back Button */}
+          <button
+            onClick={() => navigate(-1)}
+            className="px-4 py-2 bg-gray-200 hover:bg-gray-300 text-gray-700 font-medium rounded-md shadow-sm transition-colors duration-200"
+          >
+            Back
+          </button>
+
           <h1 className="text-2xl font-bold text-gray-900">Order Details</h1>
+
           <div className="flex space-x-3">
             {!isEditing ? (
               <>
@@ -172,6 +194,7 @@ const OrderDetail = () => {
                     order.product
                   )}
                 </h2>
+
                 <div className="grid grid-cols-2 gap-4 text-sm">
                   <div>
                     <span className="text-gray-600">Quantity: </span>
@@ -186,6 +209,7 @@ const OrderDetail = () => {
                       <span className="font-medium">{order.quantity}</span>
                     )}
                   </div>
+
                   <div>
                     <span className="text-gray-600">Status: </span>
                     {isEditing ? (
@@ -210,6 +234,7 @@ const OrderDetail = () => {
 
             {/* Order Information Grid */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 border-t border-gray-200 pt-6">
+              
               {/* Customer Information */}
               <div>
                 <h3 className="text-lg font-medium text-gray-900 mb-4">Customer Information</h3>
@@ -226,10 +251,6 @@ const OrderDetail = () => {
                     ) : (
                       <p className="font-medium text-gray-900">{order.customerName}</p>
                     )}
-                  </div>
-                  <div>
-                    <p className="text-sm text-gray-600 mb-1">Company ID</p>
-                    <p className="font-medium text-gray-900">{order.company_id}</p>
                   </div>
                 </div>
               </div>
@@ -251,6 +272,7 @@ const OrderDetail = () => {
                       <p className="font-medium text-gray-900">{formatDate(order.deliveryDate)}</p>
                     )}
                   </div>
+
                   <div>
                     <p className="text-sm text-gray-600 mb-1">Payment Status</p>
                     {isEditing ? (
@@ -279,11 +301,11 @@ const OrderDetail = () => {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
                 <div>
                   <p className="text-gray-600">Created By</p>
-                  <p className="text-gray-900">{order.createdBy}</p>
+                  <p className="text-gray-900">{order.createdBy.name}</p>
                 </div>
                 <div>
                   <p className="text-gray-600">Last Updated By</p>
-                  <p className="text-gray-900">{order.updatedBy}</p>
+                  <p className="text-gray-900">{order.updatedBy?.name}</p>
                 </div>
                 <div>
                   <p className="text-gray-600">Created At</p>
@@ -295,11 +317,10 @@ const OrderDetail = () => {
                 </div>
               </div>
             </div>
+
           </div>
         </div>
 
-        {/* Action Buttons */}
-     
       </div>
     </div>
   );

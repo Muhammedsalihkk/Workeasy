@@ -50,8 +50,21 @@ export const fetchAllOrders = async (
   )
   return { detaildOrder };
 };
-export const fetchOrderById = async (id: string): Promise<IOrder | null> => {
-  return await Order.findById(id)
+export const fetchOrderById = async (id: string,token:string): Promise<IOrder | any> => {
+  const order= await Order.findById(id)
+  if (!order) return null;
+
+    const [ createdUser, updatedUser] = await Promise.all([
+    getuserByid(order.createdBy as string,token),
+    order.updatedBy?getuserByid(order.updatedBy as string, token):null
+  ]);
+ 
+  return {
+    ...order.toObject(),
+    createdBy: createdUser,
+    updatedBy: updatedUser,
+
+  };
 };
 
 export const massUpdateTransactions = async (ids:string[], updates:{}) => {
@@ -77,7 +90,6 @@ export const massUpdateTransactions = async (ids:string[], updates:{}) => {
     { _id: { $in: ids } },
     { $set: updates }
   );
-
   return result;
 };
 
@@ -104,10 +116,33 @@ export const bulkOrderadd = async (
 };
 export const modifyOrder = async (
   id: string,
-  data: Partial<IOrder>
-): Promise<IOrder | null> => {
-  return await Order.findByIdAndUpdate(id, data, { new: true });
+  data: Partial<IOrder>,
+  token: string,
+  userId: string
+): Promise<IOrder | any> => {
+
+  if (data.createdBy) {
+    delete data.createdBy;
+  }
+
+  data.updatedBy = userId;
+
+  const updatedOrder = await Order.findByIdAndUpdate(id, data, { new: true });
+  if (!updatedOrder) return null;
+
+  const [createdUser, updatedUser] = await Promise.all([
+    getuserByid(updatedOrder.createdBy as string, token),
+    updatedOrder.updatedBy ? getuserByid(updatedOrder.updatedBy as string, token) : null
+  ]);
+
+  return {
+    ...updatedOrder.toObject(),
+    createdBy: createdUser,
+    updatedBy: updatedUser
+  };
 };
+
+
 
 // Service function to delete order
 export const removeOrder = async (id: string): Promise<IOrder | null> => {

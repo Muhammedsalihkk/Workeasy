@@ -7,7 +7,7 @@ import router from './routers/stockRouters';
 import { error_handling } from './middleware/errorHandling';
 const app=express()
 app.use(cookieParser())
-app.use(dbconnection)
+dbconnection()
 app.use('/api',router)
 app.listen(configData.port,()=>{
     console.log("stock service is running");

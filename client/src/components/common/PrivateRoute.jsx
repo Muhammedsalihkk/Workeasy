@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import { user_profile_get } from "../../store/slices/Slice/userSlice/Profile";
+import { user_profile_get } from "../../store/slices/Slice/userSlice/userProfile";
 
 function Privatrouter({ children }) {
   const navigate = useNavigate();

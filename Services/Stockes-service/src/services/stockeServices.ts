@@ -8,31 +8,38 @@ export const registerService = async (data: stock) => {
 };
 
 export const getOneService = async (id: string) => {
-  const stock = await StockModel.findById(id);
+  const stock = await StockModel.findOne({ _id: id, isDeleted: false });
   if (!stock) {
     throw new Error("Stock not found");
   }
   return stock;
 };
 
-export const getAllByStockAndCompanyService = async (stockId: string, companyId: string) => {
-  const stocks = await StockModel.find({ _id: stockId, companyId });
+export const getAllByCompanyService = async (companyId: string) => {
+  const stocks = await StockModel.find({ companyId, isDeleted: false });
   if (!stocks || stocks.length === 0) {
-    throw new Error("No stock added");
+    throw new Error("No stock added for this company");
   }
   return stocks;
 };
 
+export const getAllService = async (companyId?: string) => {
+  const filter: any = { isDeleted: false };
+  if (companyId) filter.companyId = companyId;
+  const stocks = await StockModel.find(filter);
+  return stocks;
+};
+
 export const updateService = async (id: string, data: Partial<stock>) => {
-  const updatedStock = await StockModel.findByIdAndUpdate(id, data, { new: true });
+  const updatedStock = await StockModel.findOneAndUpdate({ _id: id, isDeleted: false }, data, { new: true });
   if (!updatedStock) {
     throw new Error("Stock not found for update");
   }
   return updatedStock;
 };
 
-export const deleteService = async (id: string) => {
-  const deletedStock = await StockModel.findByIdAndDelete(id);
+export const softDeleteService = async (id: string) => {
+  const deletedStock = await StockModel.findOneAndUpdate({ _id: id, isDeleted: false }, { isDeleted: true }, { new: true });
   if (!deletedStock) {
     throw new Error("Stock not found for deletion");
   }

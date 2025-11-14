@@ -3,14 +3,17 @@ import company_registration_reducer from './slices/Slice/Company_slice/Register_
 import subscription_add_reducer from './slices/Slice/Subscription_slice/add_subscription';
 import user_add_reducer from './slices/Slice/userSlice/Register';
 import login_reducer from './slices/Slice/userSlice/Login';
-import user_profile_reducer from './slices/Slice/userSlice/Profile';
+
 import company_profile_reducer from './slices/Slice/Company_slice/Profile';
+import user_profile_reducer from './slices/Slice/userSlice/userProfile';
+import employee_profile_reducer from './slices/Slice/userSlice/employeeProfile';
 import company_edit_reducer from './slices/Slice/Company_slice/Edit';
 import user_edit_reducer from './slices/Slice/userSlice/Edit';
 import user_logout_reducer from './slices/Slice/userSlice/Logout';
 import { changeReducer, otp_verify, otpReducer, otpVerifyReducer } from './slices/Slice/userSlice/Password';
 import dashbord from './slices/Slice/Company_slice/Dashbord';
 import order_reducer from './slices/Slice/orders/getall';
+import order_detail_reducer from './slices/Slice/orders/orderDetail';
 import massEditReducer from './slices/Slice/orders/editAll';
 import createOrderReduce from './slices/Slice/orders/createOne';
 import employee_register_reducer from './slices/Slice/userSlice/EmployeeRegister';
@@ -22,9 +25,10 @@ export const store = configureStore({
     company_profile: company_profile_reducer,
     subscription_add: subscription_add_reducer,
     user_add: user_add_reducer,            
-    login: login_reducer,                  
-    user_profile: user_profile_reducer,    
+    login: login_reducer,                   
     user_edit: user_edit_reducer,
+    user_profile: user_profile_reducer,
+    employee_profile: employee_profile_reducer,
     otp_sending: otpReducer,
     otp_verify: otpVerifyReducer,
     company_edit: company_edit_reducer,
@@ -32,6 +36,7 @@ export const store = configureStore({
     password_change: changeReducer,
     company_dashbord: dashbord,
     orders: order_reducer,
+    order_detail: order_detail_reducer,
     massEdit: massEditReducer,
     createOrder: createOrderReduce,
     empoyee_register:employee_register_reducer,

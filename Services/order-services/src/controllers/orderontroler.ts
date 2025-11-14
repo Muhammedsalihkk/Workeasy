@@ -33,7 +33,8 @@ export const getOrderById = async (
   next: NextFunction
 ): Promise<void> => {
   try {
-    const order = await fetchOrderById(req.params.id);
+    const token:string=req.cookies.token
+    const order = await fetchOrderById(req.params.id,token);
     if (!order) return next({ status: 404, message: "Order not found" });
     res.status(200).json(order);
   } catch (err) {
@@ -93,7 +94,10 @@ export const updateOrder = async (
   next: NextFunction
 ): Promise<void> => {
   try {
-    const updatedOrder = await modifyOrder(req.params.id, req.body);
+    const token:string=req.cookies.token
+    
+    
+    const updatedOrder = await modifyOrder(req.params.id, req.body,token,req.user.userId);
     if (!updatedOrder) return next({ status: 404, message: "Order not found" });
     res.status(200).json(updatedOrder);
   } catch (err: any) {

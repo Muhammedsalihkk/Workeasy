@@ -15,7 +15,7 @@ import {
   changge_password,
 } from "../../store/slices/Slice/userSlice/Password";
 import { clearError, user_edit } from "../../store/slices/Slice/userSlice/Edit";
-import { user_profile_get } from "../../store/slices/Slice/userSlice/Profile";
+import { user_profile_get } from "../../store/slices/Slice/userSlice/userProfile";
 import { getProfileImage, appendImageToFormData } from "../../utils/imageUtil";
 import { user_logout } from "../../store/slices/Slice/userSlice/Logout";
 
@@ -233,7 +233,7 @@ const UserProfile = () => {
 
   return (
 <>
-  <ToastContainer />
+
   <div className="ml-64 min-h-screen bg-gray-100 pt-24 px-4 md:px-20">
     <div className="bg-white rounded-xl shadow-md overflow-hidden">
       {/* Profile Header */}

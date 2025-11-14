@@ -37,7 +37,7 @@ function App() {
              <Route element={<Dashboard/>} path='/dashboard'></Route>
              <Route path="/orders/new" element={<AddOrderForm />} />
              <Route path='/orders' element={<OrderTable/>}/>
-             <Route path='/orders/detail'element={<OrderDetail/>}/>
+             <Route path='/orders/detail/:id'element={<OrderDetail/>}/>
              <Route path='/employees' element={<EmployeesTable/>}/>
              <Route path='/employees/new' element={<CreateEmployee data={{}}/>}/>
              <Route path='/employees/profile/:id' element={<EmployeeProfile/>}/>

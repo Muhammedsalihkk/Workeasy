@@ -11,22 +11,15 @@ export const checkAuth = (
   try {
    
     const token = (req.cookies.token || "").trim()
-
-
     if (!token) {
       return res
         .status(401)
         .json({ message: "Unauthorized: No token provided" });
     }
     const secretKey = (confiqdata.JWT_Secret||'').trim() 
- 
-  
     const decoded = jwt.verify(token, secretKey);
-   
-  
-  
+    req.user = decoded; 
     
-    req.user = decoded; // attach decoded payload to request
     next();
   } catch (err) {
     console.log(err);

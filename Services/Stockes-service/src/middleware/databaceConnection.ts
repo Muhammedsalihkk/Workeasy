@@ -5,6 +5,7 @@ async function dbconnection(){
         await mongoose.connect(configData.db_address as string)
         console.log("Database connected");
         
+        
     }
     catch(error){
         console.log("DB connection problem with: "+error);

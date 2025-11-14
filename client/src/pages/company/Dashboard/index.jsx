@@ -3,13 +3,14 @@ import OrderStatsChart from "./OrderGraph";
 import RevenueChart from "./RevanuewGraph";
 import StockPieChart from "./StockPieChart";
 import EmployeeCircleChart from "./EmployeeCircleChart";
+import { ToastContainer } from "react-toastify";
 
 const Dashboard = ({ message }) => {
   console.log(message);
 
   return (
 <div className="ml-64" style={{ marginTop: '-15px' }}>
-
+  <ToastContainer />
   <Cards
     stats={{
       income: 12000,

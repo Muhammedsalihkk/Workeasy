@@ -16,6 +16,5 @@ app.use('/api',subrouter)
 
 app.listen(configration_data.server_port,()=>{
     console.log("subscription server running");
-    
 })
 app.use(error_handling)

@@ -1,9 +1,11 @@
 
 import { Home, RefreshCw, ServerCrash } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 
 export default function Error500() {
+  const navigate = useNavigate();
   const handleRefresh = () => {
-    window.location.reload();
+    navigate(-1)
   };
 
   return (
