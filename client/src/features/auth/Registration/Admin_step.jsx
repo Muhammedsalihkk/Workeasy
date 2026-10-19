@@ -8,9 +8,8 @@ import { add_user } from "../../../store/slices/Slice/userSlice/Register";
 function Admin_step({ step_setting }) {
   const { currentStep, setCurrentStep, company_id } = step_setting;
   const [complete, setcomplete] = useState(false);
-  const { owner_response_data, loading, error } = useSelector(
-    (state) => state.owner_add
-  );
+  const userAddState = useSelector((state) => state.user_add || state.owner_add || {});
+  const { user_response_data, owner_response_data = user_response_data, loading, error } = userAddState;
   const dispatch = useDispatch();
   useEffect(() => {
     if (owner_response_data) {
@@ -68,6 +67,12 @@ function Admin_step({ step_setting }) {
         <h2 className="text-xl font-semibold text-gray-800 pt-4">
           Admin Information
         </h2>
+
+        {error && (
+          <div className="p-3 bg-red-50 border border-red-200 text-red-700 text-sm rounded-md">
+            {typeof error === "string" ? error : error?.message || error?.error || "Registration failed. Please check your information."}
+          </div>
+        )}
 
         {/* Admin Name */}
         <div>

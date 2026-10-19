@@ -3,6 +3,7 @@
 import Joi from 'joi';
 
 export const validation = Joi.object({
+  company_id: Joi.string().optional().allow(""),
   img: Joi.string().allow(""),
 
   company_role: Joi.string()

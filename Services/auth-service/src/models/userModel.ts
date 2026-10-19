@@ -11,13 +11,13 @@ const userschema = new Schema<User>({
   },
   employee_id: {
     type: String,
-    required: function () {
+    required: function (this: any): boolean {
       return this.company_role !== "Admin";
     },
   },
   dob: {
     type: String,
-    required: function () {
+    required: function (this: any): boolean {
       return this.company_role !== "Admin";
     },
   },
@@ -25,19 +25,19 @@ const userschema = new Schema<User>({
     type: {
       type: String,
       enum: ["Morning", "Evening", "Night", "Flexible"],
-      required: function () {
+      required: function (this: any): boolean {
         return this.company_role !== "Admin";
       },
     },
     startTime: {
       type: String,
-      required: function () {
+      required: function (this: any): boolean {
         return this.company_role !== "Admin";
       },
     },
     endTime: {
       type: String,
-      required: function () {
+      required: function (this: any): boolean {
         return this.company_role !== "Admin";
       },
     },
@@ -45,7 +45,7 @@ const userschema = new Schema<User>({
 
   join_date: {
     type: String,
-    required: function () {
+    required: function (this: any): boolean {
       return this.company_role !== "Admin";
     },
   },
@@ -57,11 +57,7 @@ const userschema = new Schema<User>({
 
   department: {
     type: String,
-    enum: [
-      "StockDepartment",
-      "SalesDepartment",
-    ],
-    required: function () {
+    required: function (this: any): boolean {
       return this.company_role !== "Admin";
     },
   },

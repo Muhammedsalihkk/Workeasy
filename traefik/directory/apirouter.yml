@@ -25,6 +25,11 @@ http:
       service: subscription-service
       entryPoints:
          - web
+    attendence-router:
+      rule: PathPrefix(`/api/attendence`)
+      service: attendence-service
+      entryPoints:
+         - web
 
   services:
     stock-service:
@@ -47,5 +52,10 @@ http:
       loadBalancer:
         servers:
           - url: "http://subscription-service:3002"
+    attendence-service:
+      loadBalancer:
+        servers:
+          - url: "http://attendence-services:3003"
+
 
   

@@ -10,11 +10,11 @@ export const UserRegistration = async (req: AuthRequest, res: Response, next: Ne
             console.log(error.details);
             const err: any = new Error(error.details[0].message)
             err.code = 400
-            throw new Error(err)
+            throw err
         }
         
-        
-        const result = await User_register(req.body, req.user.company_id||req.params.company_id)        
+        const companyId = req.user?.company_id || req.params?.company_id || req.body?.company_id;
+        const result = await User_register(req.body, companyId)        
         res.status(200).json({ message: result })
         }
          catch (error) {
