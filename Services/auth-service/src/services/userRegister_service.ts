@@ -18,7 +18,6 @@ export const User_register = async (userdata: User, company_id: string) => {
             gender:userdata.gender,
             password: hashedpassword,
             email: userdata.email,
-            Salary:userdata.salary,
             number: userdata.number,
             company_role: userdata.company_role,
             department:userdata.department, 
@@ -31,7 +30,7 @@ export const User_register = async (userdata: User, company_id: string) => {
     }
     catch (error: any) {
         console.log(error.message);
-        throw error.code
+        throw error
     }
 
 }   

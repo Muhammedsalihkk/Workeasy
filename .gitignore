@@ -1,6 +1,59 @@
-node_modules
-.env
-.dockerignore
+# Dependencies
+node_modules/
+*/node_modules/
+*/*/node_modules/
+package-lock.json.bak
+
+# Production & Build outputs
 dist/
-tests
+*/dist/
+build/
+*/build/
+out/
+*/out/
+dist-ssr/
+
+# Environment configurations
+.env
+.env.*
+*.env
+!.env.example
+!*.env.example
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+# Uploads & Runtime data
+image/
+images/
+uploads/
+*/image/
+*/images/
+*/uploads/
+tmp/
+temp/
 facenv/
+
+# Testing & Coverage
+coverage/
+*/coverage/
+.nyc_output/
+tests/
+
+# Editor & OS artifacts
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/*
+!.vscode/extensions.json
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
